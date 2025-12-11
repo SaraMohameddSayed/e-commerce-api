@@ -30,7 +30,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     <ProjectReference Include="..\Managers\Managers.csproj" />
-    <ProjectReference Include="..\ModelViews\ViewModels.csproj" />
+    <ProjectReference Include="..\ViewModels\ViewModels.csproj" />
   </ItemGroup>
 
  
