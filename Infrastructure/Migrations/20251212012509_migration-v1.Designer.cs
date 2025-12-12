@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20251210132806_migration-v1")]
+    [Migration("20251212012509_migration-v1")]
     partial class migrationv1
     {
         /// <inheritdoc />
@@ -422,6 +422,32 @@ namespace Infrastructure.Migrations
                     b.ToTable("Order");
                 });
 
+            modelBuilder.Entity("Models.OrderProduct", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"));
+
+                    b.Property<int>("orderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("productId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("quantity")
+                        .HasColumnType("int");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("orderId");
+
+                    b.HasIndex("productId");
+
+                    b.ToTable("OrderProduct");
+                });
+
             modelBuilder.Entity("Models.Product", b =>
                 {
                     b.Property<int>("id")
@@ -514,7 +540,7 @@ namespace Infrastructure.Migrations
                         {
                             id = 1,
                             applicationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            discountValue = 0m,
+                            discountValue = 10m,
                             offerId = 1,
                             productId = 1
                         },
@@ -522,25 +548,10 @@ namespace Infrastructure.Migrations
                         {
                             id = 2,
                             applicationDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            discountValue = 0m,
+                            discountValue = 20m,
                             offerId = 1,
                             productId = 2
                         });
-                });
-
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.Property<int>("ordersid")
-                        .HasColumnType("int");
-
-                    b.Property<int>("productsid")
-                        .HasColumnType("int");
-
-                    b.HasKey("ordersid", "productsid");
-
-                    b.HasIndex("productsid");
-
-                    b.ToTable("OrderProduct");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -624,6 +635,25 @@ namespace Infrastructure.Migrations
                     b.Navigation("product");
                 });
 
+            modelBuilder.Entity("Models.OrderProduct", b =>
+                {
+                    b.HasOne("Models.Order", "order")
+                        .WithMany("products")
+                        .HasForeignKey("orderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Models.Product", "product")
+                        .WithMany("orders")
+                        .HasForeignKey("productId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("order");
+
+                    b.Navigation("product");
+                });
+
             modelBuilder.Entity("Models.Product", b =>
                 {
                     b.HasOne("Models.Category", "category")
@@ -654,21 +684,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("product");
                 });
 
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.HasOne("Models.Order", null)
-                        .WithMany()
-                        .HasForeignKey("ordersid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Models.Product", null)
-                        .WithMany()
-                        .HasForeignKey("productsid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Models.Cart", b =>
                 {
                     b.Navigation("products");
@@ -684,11 +699,18 @@ namespace Infrastructure.Migrations
                     b.Navigation("products");
                 });
 
+            modelBuilder.Entity("Models.Order", b =>
+                {
+                    b.Navigation("products");
+                });
+
             modelBuilder.Entity("Models.Product", b =>
                 {
                     b.Navigation("carts");
 
                     b.Navigation("offers");
+
+                    b.Navigation("orders");
                 });
 #pragma warning restore 612, 618
         }

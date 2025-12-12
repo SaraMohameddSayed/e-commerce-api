@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 
 namespace Managers
 {
-    public class productOfferManager : MainManager<ProductOffer>
+    public class orderProductManager:MainManager<OrderProduct>
     {
-        public productOfferManager(dbContext _context) : base(_context)
+        public  orderProductManager(dbContext _dbContext):base(_dbContext)
         {
-           
+
         }
     }
-
 }

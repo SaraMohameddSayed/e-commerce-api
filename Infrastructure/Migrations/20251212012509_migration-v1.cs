@@ -301,21 +301,24 @@ namespace Infrastructure.Migrations
                 name: "OrderProduct",
                 columns: table => new
                 {
-                    ordersid = table.Column<int>(type: "int", nullable: false),
-                    productsid = table.Column<int>(type: "int", nullable: false)
+                    id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    orderId = table.Column<int>(type: "int", nullable: false),
+                    productId = table.Column<int>(type: "int", nullable: false),
+                    quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProduct", x => new { x.ordersid, x.productsid });
+                    table.PrimaryKey("PK_OrderProduct", x => x.id);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Order_ordersid",
-                        column: x => x.ordersid,
+                        name: "FK_OrderProduct_Order_orderId",
+                        column: x => x.orderId,
                         principalTable: "Order",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Product_productsid",
-                        column: x => x.productsid,
+                        name: "FK_OrderProduct_Product_productId",
+                        column: x => x.productId,
                         principalTable: "Product",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
@@ -378,8 +381,8 @@ namespace Infrastructure.Migrations
                 columns: new[] { "id", "applicationDate", "discountValue", "offerId", "productId" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 1, 1 },
-                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 0m, 1, 2 }
+                    { 1, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 10m, 1, 1 },
+                    { 2, new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), 20m, 1, 2 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -437,9 +440,14 @@ namespace Infrastructure.Migrations
                 column: "productId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderProduct_productsid",
+                name: "IX_OrderProduct_orderId",
                 table: "OrderProduct",
-                column: "productsid");
+                column: "orderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderProduct_productId",
+                table: "OrderProduct",
+                column: "productId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_categoryId",

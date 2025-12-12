@@ -18,7 +18,7 @@ public class Order
 
     public string userId { get; set; }
 
-    public virtual List<Product>? products { get; set; }
+    public virtual List<OrderProduct>? products { get; set; }
 
     public orderStatus status { get; set; } = orderStatus.Pending;
 

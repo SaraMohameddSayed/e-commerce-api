@@ -84,6 +84,7 @@ builder.Services.AddScoped<cartProductManager>();
 builder.Services.AddScoped<categoryManager>();
 builder.Services.AddScoped<offerManager>();
 builder.Services.AddScoped<orderManager>();
+builder.Services.AddScoped<orderProductManager>();
 builder.Services.AddScoped<productManager>();
 builder.Services.AddScoped<productOfferManager>();
 builder.Services.AddScoped<messageManager>();

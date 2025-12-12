@@ -23,7 +23,7 @@ public class Product
 
     public virtual Category category { get; set; }
 
-    public virtual List<Order>? orders { get; set; }
+    public virtual List<OrderProduct>? orders { get; set; }
 
     public virtual List<CartProduct>? carts { get; set; }
 

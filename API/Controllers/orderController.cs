@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Models;
 using System.Security.Claims;
+using ViewModels;
 
 namespace Controllers
 {
@@ -15,32 +16,20 @@ namespace Controllers
     {
         public orderManager orderManager;
         public productManager productManager;
-        public orderController(orderManager _orderManager, productManager _productManager)
+        public orderProductManager orderProductManager;
+        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager)
         {
-            orderManager=_orderManager;
+            orderManager = _orderManager;
             productManager = _productManager;
+            orderProductManager = _orderProductManager;
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> addOrder( List<int> productIds)
+        public async Task<IActionResult> addOrder( List<addOrderProductViewModel> addorderproduct)
         {
             var userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var products=productManager.getAll().Where(p=> productIds.Contains( p.id)).ToList();
-            var order=new Order
-            {
-                userId=userId,
-                products= products
-            };
-            var result =await orderManager.Add(order);
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return BadRequest(result);
-            }
+            return Ok();
         }
 
 

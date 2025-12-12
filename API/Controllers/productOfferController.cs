@@ -33,7 +33,7 @@ namespace El_beqala_API.Controllers
                 return BadRequest("Invalid product or offer ID.");
             }
             var discountValue = (product.price * offer.discount) / 100;
-            var result = await productOfferManager.addProductToOffer(_addProductToOfferViewModel.toModel(discountValue));
+            var result = await productOfferManager.Add(_addProductToOfferViewModel.toModel(discountValue));
             if (result)
             {
                 return Ok(result);

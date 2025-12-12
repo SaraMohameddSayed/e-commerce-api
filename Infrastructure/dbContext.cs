@@ -13,6 +13,7 @@ public class dbContext : IdentityDbContext<IdentityUser>
 
     }
     public virtual DbSet<Product> Product { get; set; }
+    public virtual DbSet<OrderProduct> OrderProduct { get; set; }
     public virtual DbSet<Offer> Offer { get; set; }
     public virtual DbSet<ProductOffer> ProductOffer { get; set; }
     public virtual DbSet<Order> Order { get; set; }
@@ -28,6 +29,7 @@ public class dbContext : IdentityDbContext<IdentityUser>
         modelBuilder.ApplyConfiguration(new cartProductConfiguration());
         modelBuilder.ApplyConfiguration(new categoryConfiguration());
         modelBuilder.ApplyConfiguration(new orderConfiguration());
+        modelBuilder.ApplyConfiguration(new OrderProductConfiguration());
         modelBuilder.ApplyConfiguration(new offerConfiguration());
         modelBuilder.ApplyConfiguration(new productConfiguration());
         modelBuilder.ApplyConfiguration(new ProductOfferConfiguration());
@@ -76,13 +78,15 @@ public class dbContext : IdentityDbContext<IdentityUser>
             {
                 id = 1,
                 productId = 1,
-                offerId = 1
+                offerId = 1,
+                discountValue = 10
             },
             new ProductOffer
             {
                 id = 2,
                 productId = 2,
-                offerId = 1
+                offerId = 1,
+                discountValue = 20
             }
             );
     }
