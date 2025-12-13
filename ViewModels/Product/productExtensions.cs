@@ -10,10 +10,11 @@ namespace ViewModels
     {
         public static ProductViewModel toViewModel(this Product product)
         {
-            
-                var discountValue = product.offers?.OrderByDescending(p => p.applicationDate)?.FirstOrDefault()?.discountValue??0;
-                var discountedPrice= discountValue>0?
-                product.price - discountValue: product.price;
+
+            var discountValue = product.offers?.OrderByDescending(p => p.applicationDate)?.FirstOrDefault()?.discountValue ?? 0;
+            var discountedPrice = discountValue > 0 ?
+            product.price - discountValue : product.price;
+            var offerName = product.offers != null && product.offers.Count > 0 ? product.offers.OrderByDescending(p => p.applicationDate).FirstOrDefault()?.offer?.name ?? string.Empty : string.Empty;
             return new ProductViewModel
             {
                 id = product.id,
@@ -24,7 +25,8 @@ namespace ViewModels
                 imageUrl = product.imageUrl,
                 quantity = product.quantity,
                 categoryId = product.categoryId,
-                categoryName = product.category != null ? product.category.name : string.Empty
+                categoryName = product.category != null ? product.category.name : string.Empty,
+                offerName = offerName
             };
         }
         public static Product toModel(this addProductViewModel addproductViewModel)
@@ -36,10 +38,10 @@ namespace ViewModels
                 price = addproductViewModel.price,
                 quantity = addproductViewModel.quantity,
                 categoryId = addproductViewModel.categoryId,
-                imageUrl=addproductViewModel.imageUrl ?? string.Empty
+                imageUrl = addproductViewModel.imageUrl ?? string.Empty
 
             };
 
-         }
+        }
     }
 }

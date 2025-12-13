@@ -43,7 +43,7 @@ namespace Controllers
         public IActionResult getAllProducts()
         {
 
-            var result = productManager.getAll().Include(p=>p.category).Include(p=>p.offers).Select(p => p.toViewModel());
+            var result = productManager.getAll().Include(p=>p.category).Include(p=>p.offers).ThenInclude(po=>po.offer).Select(p => p.toViewModel());
             if (result != null)
             {
                 return Ok(result);

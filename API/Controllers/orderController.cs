@@ -1,8 +1,10 @@
+using Humanizer;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using System.Security.Claims;
 using ViewModels;
@@ -17,19 +19,68 @@ namespace Controllers
         public orderManager orderManager;
         public productManager productManager;
         public orderProductManager orderProductManager;
-        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager)
+        public cartProductManager cartProductManager;
+        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager,cartProductManager _cartProductManager)
         {
             orderManager = _orderManager;
             productManager = _productManager;
             orderProductManager = _orderProductManager;
+            cartProductManager = _cartProductManager;
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> addOrder( List<addOrderProductViewModel> addorderproduct)
+        public async Task<IActionResult> addOrder( addOrderViewModel addorderViewModel)
         {
             var userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok();
+            var cartProducts= await cartProductManager.getAll().Where(cp=>cp.cart.userId==userId).ToListAsync();
+            var order = new Order
+            {
+                userId = userId,
+                country = addorderViewModel.Country,
+                city = addorderViewModel.City,
+                address = addorderViewModel.Address,
+                phone = addorderViewModel.Phone,
+                paymentMethod = addorderViewModel.PaymentMethod,
+                totalAmount = addorderViewModel.TotalAmount,
+                notes = addorderViewModel.Notes,
+                status = orderStatus.Pending,
+                createdAt = DateTime.Now,
+                updatedAt = DateTime.Now,
+                trackingNumber = $"ORD-{DateTime.UtcNow:yyMMddHHmmss}",
+                products = new List<OrderProduct>()
+            };
+
+            foreach (var cartProduct in cartProducts)
+            {
+                order.products.Add(new OrderProduct
+                {
+                   productId= cartProduct.productId,
+                   quantity= cartProduct.quantity
+                });
+
+                // Œ’„ «·ﬂ„Ì… „‰ «·„Œ“Ê‰
+                var product = await productManager.getOne(cartProduct.productId);
+                if (product != null)
+                {
+                    product.quantity -= cartProduct.quantity;
+                }
+            }
+
+          var result= await orderManager.Add(order);
+
+           if(result== false)
+            {
+                return BadRequest(new { message = "Failed to create order" });
+            }
+            // Õ–› «·„‰ Ã«  „‰ «·”·… »⁄œ ≈‰‘«¡ «·ÿ·»
+            foreach (var cartProduct in cartProducts)
+            {
+                await cartProductManager.Delete(cartProduct);
+            }
+
+            return Ok(new { message = "Order created successfully", orderId = order.id });
+
         }
 
 

@@ -100,5 +100,26 @@ namespace Controllers
                 throw;
             }
         }
+        [HttpPut]
+        public async Task<IActionResult> updateCart(List<CartProduct> updatedcartProducts)
+        {
+            var userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var cartId = await cartManager.getAll().Where(c => c.userId == userId)
+                .Select(c => c.id)
+                .FirstOrDefaultAsync();
+            var cartproducts = await cartProductManager.getAll()
+                .Where(cp => cp.cartId == cartId)
+                .ToListAsync();
+            foreach (var updatedProduct in updatedcartProducts)
+            {
+                var existingProduct = cartproducts.FirstOrDefault(cp => cp.id == updatedProduct.id);
+                if (existingProduct != null)
+                {
+                    existingProduct.quantity = updatedProduct.quantity;
+                    await cartProductManager.Update(existingProduct);
+                }
+            }
+                return Ok();
+        }
     }
 }
