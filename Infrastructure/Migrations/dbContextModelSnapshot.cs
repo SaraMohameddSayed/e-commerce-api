@@ -430,6 +430,9 @@ namespace Infrastructure.Migrations
                     b.Property<int>("orderId")
                         .HasColumnType("int");
 
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int>("productId")
                         .HasColumnType("int");
 

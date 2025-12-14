@@ -20,7 +20,7 @@ namespace Controllers
         public productManager productManager;
         public orderProductManager orderProductManager;
         public cartProductManager cartProductManager;
-        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager,cartProductManager _cartProductManager)
+        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager, cartProductManager _cartProductManager)
         {
             orderManager = _orderManager;
             productManager = _productManager;
@@ -30,10 +30,10 @@ namespace Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> addOrder( addOrderViewModel addorderViewModel)
+        public async Task<IActionResult> addOrder(addOrderViewModel addorderViewModel)
         {
-            var userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var cartProducts= await cartProductManager.getAll().Where(cp=>cp.cart.userId==userId).ToListAsync();
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var cartProducts = await cartProductManager.getAll().Where(cp => cp.cart.userId == userId).ToListAsync();
             var order = new Order
             {
                 userId = userId,
@@ -42,7 +42,6 @@ namespace Controllers
                 address = addorderViewModel.Address,
                 phone = addorderViewModel.Phone,
                 paymentMethod = addorderViewModel.PaymentMethod,
-                totalAmount = addorderViewModel.TotalAmount,
                 notes = addorderViewModel.Notes,
                 status = orderStatus.Pending,
                 createdAt = DateTime.Now,
@@ -50,26 +49,36 @@ namespace Controllers
                 trackingNumber = $"ORD-{DateTime.UtcNow:yyMMddHHmmss}",
                 products = new List<OrderProduct>()
             };
-
+            decimal totalAmount = 0;
             foreach (var cartProduct in cartProducts)
             {
+                var product = await productManager.getOne(cartProduct.productId);
+
+                decimal discountValue = product.offers?
+                    .OrderByDescending(o => o.applicationDate)
+                    .FirstOrDefault()?.discountValue ?? 0;
+
+                decimal discountedPrice = discountValue > 0 ? product.price - discountValue : product.price;
+
                 order.products.Add(new OrderProduct
                 {
-                   productId= cartProduct.productId,
-                   quantity= cartProduct.quantity
+                    productId = cartProduct.productId,
+                    quantity = cartProduct.quantity,
+                    price = discountedPrice
                 });
 
                 // Œ’„ «·ﬂ„Ì… „‰ «·„Œ“Ê‰
-                var product = await productManager.getOne(cartProduct.productId);
                 if (product != null)
                 {
                     product.quantity -= cartProduct.quantity;
                 }
+                //  ÕœÌÀ ≈Ã„«·Ì «·ÿ·»
+                totalAmount += discountedPrice * cartProduct.quantity;
             }
+            order.totalAmount = totalAmount;
+            var result = await orderManager.Add(order);
 
-          var result= await orderManager.Add(order);
-
-           if(result== false)
+            if (result == false)
             {
                 return BadRequest(new { message = "Failed to create order" });
             }
@@ -102,7 +111,7 @@ namespace Controllers
         }
 
 
-        [HttpGet("getByUserId")]
+        [HttpGet("getAlByUserId")]
 
         public IActionResult getAllOrdersByUserId(int _userId)
         {
@@ -116,6 +125,13 @@ namespace Controllers
             {
                 return BadRequest(result);
             }
+        }
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> getByOrderId(int orderId)
+        {
+            var order = await orderManager.getOne(orderId);
+
+            return Ok(order.toViewModel());
         }
     }
 }

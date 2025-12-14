@@ -305,6 +305,7 @@ namespace Infrastructure.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     orderId = table.Column<int>(type: "int", nullable: false),
                     productId = table.Column<int>(type: "int", nullable: false),
+                    price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     quantity = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

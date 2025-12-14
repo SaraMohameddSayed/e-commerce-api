@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(dbContext))]
-    [Migration("20251212012509_migration-v1")]
+    [Migration("20251214001245_migration-v1")]
     partial class migrationv1
     {
         /// <inheritdoc />
@@ -432,6 +432,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<int>("orderId")
                         .HasColumnType("int");
+
+                    b.Property<decimal>("price")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<int>("productId")
                         .HasColumnType("int");
