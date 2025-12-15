@@ -1,4 +1,5 @@
 ﻿using Models;
+using Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace ViewModels
 
         public  List<orderproductViewModel>? products { get; set; }
 
-        public orderStatus status { get; set; } = orderStatus.Pending;
+        public OrderStatus status { get; set; } = OrderStatus.Pending;
 
         public string country { get; set; }
         public string city { get; set; }

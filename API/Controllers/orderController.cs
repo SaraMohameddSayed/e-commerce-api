@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Models;
+using Models.Enums;
 using System.Security.Claims;
 using ViewModels;
 
@@ -43,7 +44,7 @@ namespace Controllers
                 phone = addorderViewModel.Phone,
                 paymentMethod = addorderViewModel.PaymentMethod,
                 notes = addorderViewModel.Notes,
-                status = orderStatus.Pending,
+                status = OrderStatus.Pending,
                 createdAt = DateTime.Now,
                 updatedAt = DateTime.Now,
                 trackingNumber = $"ORD-{DateTime.UtcNow:yyMMddHHmmss}",
@@ -94,29 +95,13 @@ namespace Controllers
 
 
 
-        [HttpGet("getAll")]
 
-        public IActionResult getAllOrders()
+        [HttpGet("my-orders")]
+
+        public IActionResult getAllOrdersByUserId()
         {
-
-            var result = orderManager.getAll().ToList();
-            if (result != null)
-            {
-                return Ok(result);
-            }
-            else
-            {
-                return BadRequest(result);
-            }
-        }
-
-
-        [HttpGet("getAlByUserId")]
-
-        public IActionResult getAllOrdersByUserId(int _userId)
-        {
-
-            var result = orderManager.getOne(_userId);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var result = orderManager.getAll().Where(o=>o.userId==userId).Include(o=>o.products).Select(o=>o.toViewModel()).ToListAsync();
             if (result != null)
             {
                 return Ok(result);
@@ -132,6 +117,50 @@ namespace Controllers
             var order = await orderManager.getOne(orderId);
 
             return Ok(order.toViewModel());
+        }
+
+        //Admin
+        [HttpGet]
+
+        public IActionResult getAllOrders()
+        {
+
+            var result = orderManager.getAll().Include(o => o.products).Select(o => o.toViewModel()).ToListAsync();
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            else
+            {
+                return BadRequest(result);
+            }
+        }
+
+        [HttpGet("status/{status}")]
+        public async Task<IActionResult> getOrdersByStatus(OrderStatus status)
+        {
+            var orders = await orderManager.getAll().Where(o => o.status == status).ToListAsync();
+            return Ok(orders.Select(o => o.toViewModel()));
+        }
+        [HttpPut("{orderId}/status")]
+        public async Task<IActionResult> updateOrderStatus(int orderId, [FromBody] OrderStatus newStatus)
+        {
+            var order = await orderManager.getOne(orderId);
+            if (order == null)
+            {
+                return NotFound(new { message = "Order not found" });
+            }
+            order.status = newStatus;
+            order.updatedAt = DateTime.Now;
+            var result = await orderManager.Update(order);
+            if (result)
+            {
+                return Ok(new { message = "Order status updated successfully" });
+            }
+            else
+            {
+                return BadRequest(new { message = "Failed to update order status" });
+            }
         }
     }
 }

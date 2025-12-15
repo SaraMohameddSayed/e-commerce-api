@@ -1,17 +1,10 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
+using Models.Enums;
 namespace Models;
 
-public enum
-    orderStatus
-{
-    Pending,
-    Confirmed,
-    Shipped,
-    Delivered,
-    Cancelled
-}
+
 public class Order
 {
     public int id { get; set; }
@@ -20,7 +13,7 @@ public class Order
 
     public virtual List<OrderProduct>? products { get; set; }
 
-    public orderStatus status { get; set; } = orderStatus.Pending;
+    public OrderStatus status { get; set; } = OrderStatus.Pending;
 
     public string country { get; set; }
     public string city { get; set; }
