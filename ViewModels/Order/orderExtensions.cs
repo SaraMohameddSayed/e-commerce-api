@@ -1,5 +1,7 @@
-﻿using System;
-using System.Collections.Generic;using Models;
+﻿using Microsoft.AspNetCore.Identity;
+using Models;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,10 +12,12 @@ namespace ViewModels
     {
         public static orderViewModel toViewModel(this Order order)
         {
+
             return new orderViewModel
             {
                 id = order.id,
-                userId = order.userId,
+                customerId = order.userId,
+                customerName=order.user.UserName,
                 products = order.products?.Select(op => op.toViewModel()).ToList(),
                 status = order.status,
                 country = order.country,

@@ -412,9 +412,11 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("userId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("id");
+
+                    b.HasIndex("userId");
 
                     b.ToTable("Order");
                 });
@@ -633,6 +635,17 @@ namespace Infrastructure.Migrations
                     b.Navigation("cart");
 
                     b.Navigation("product");
+                });
+
+            modelBuilder.Entity("Models.Order", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "user")
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("user");
                 });
 
             modelBuilder.Entity("Models.OrderProduct", b =>

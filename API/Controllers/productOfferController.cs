@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ViewModels;
 
-namespace El_beqala_API.Controllers
+namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

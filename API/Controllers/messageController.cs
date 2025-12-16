@@ -5,7 +5,7 @@ using Models;
 using System.Security.Claims;
 using ViewModels;
 
-namespace El_beqala_API.Controllers
+namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

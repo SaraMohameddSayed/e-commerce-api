@@ -13,10 +13,9 @@ namespace ViewModels
 
         public int id { get; set; }
 
-        public string userId { get; set; }
-
+        public string customerId { get; set; }
+        public string customerName { get; set; }
         public  List<orderproductViewModel>? products { get; set; }
-
         public OrderStatus status { get; set; } = OrderStatus.Pending;
 
         public string country { get; set; }

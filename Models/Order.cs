@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Models.Enums;
+using Microsoft.AspNetCore.Identity;
 namespace Models;
 
 
@@ -10,6 +11,7 @@ public class Order
     public int id { get; set; }
 
     public string userId { get; set; }
+    public virtual IdentityUser? user { get; set; }
 
     public virtual List<OrderProduct>? products { get; set; }
 

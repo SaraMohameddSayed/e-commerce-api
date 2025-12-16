@@ -21,12 +21,15 @@ namespace Controllers
         public productManager productManager;
         public orderProductManager orderProductManager;
         public cartProductManager cartProductManager;
-        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager, cartProductManager _cartProductManager)
+        public UserManager<IdentityUser> userManager;
+        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager, cartProductManager _cartProductManager,UserManager<IdentityUser> _userManager)
         {
             orderManager = _orderManager;
             productManager = _productManager;
             orderProductManager = _orderProductManager;
             cartProductManager = _cartProductManager;
+            userManager = _userManager;
+
         }
 
 
@@ -38,6 +41,7 @@ namespace Controllers
             var order = new Order
             {
                 userId = userId,
+                user=userManager.Users.FirstOrDefault(u=>u.Id==userId),
                 country = addorderViewModel.Country,
                 city = addorderViewModel.City,
                 address = addorderViewModel.Address,
@@ -120,12 +124,39 @@ namespace Controllers
         }
 
         //Admin
+        [HttpGet("dashboard")]
+        public IActionResult OrdersDashboard()
+        {
+            var orders = orderManager.getAll();
+
+            var result = new
+            {
+                totalOrders = orders.Count(),
+                pendingOrders = orders.Count(o => o.status == OrderStatus.Pending),
+                confirmedOrders = orders.Count(o => o.status == OrderStatus.Confirmed),
+                shippedOrders = orders.Count(o => o.status == OrderStatus.Shipped),
+                deliveredOrders = orders.Count(o => o.status == OrderStatus.Delivered),
+
+                latestOrders = orders
+                    .OrderByDescending(o => o.createdAt)
+                    .Take(5)
+                    .Include(o=> o.user)
+                    .Include(o => o.products)
+                    .ThenInclude(o=>o.product)
+                    .Select(o =>o.toViewModel()
+                    )
+                    .ToList()
+            };
+
+            return Ok(result);
+        }
+
         [HttpGet]
 
         public IActionResult getAllOrders()
         {
 
-            var result = orderManager.getAll().Include(o => o.products).Select(o => o.toViewModel()).ToListAsync();
+            var result = orderManager.getAll().Include(o=>o.user).Include(o => o.products).ThenInclude(o=>o.product).Select(o => o.toViewModel());
             if (result != null)
             {
                 return Ok(result);
