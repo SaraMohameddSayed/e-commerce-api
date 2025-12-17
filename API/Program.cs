@@ -1,6 +1,7 @@
 
 
 using Infrastructure;
+using Infrastructure.Seeders;
 using Managers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -91,9 +92,17 @@ builder.Services.AddScoped<messageManager>();
 builder.Services.AddScoped<cloudinaryManager>();
 builder.Services.AddScoped<accountManager>();
 builder.Services.AddScoped<tokenManager>();
+builder.Services.AddScoped<governorateManager>();
+
+
 
 var app = builder.Build();
-
+//seeding
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<dbContext>();
+    await GovernorateAreaSeeder.SeedAsync(context);
+}
 app.UseHttpsRedirection();
 app.UseCors();
 app.UseAuthentication();

@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Models;
+namespace ViewModels
+{
+    public static class areaExtensions
+    {
+        public static areaViewModel ToViewModel(this Area area)
+        {
+            if (area == null) return null;
+            return new areaViewModel
+            {
+                id = area.id,
+                name = area.name,
+                governorateId = area.governorateId
+            };
+        }
+    }
+}

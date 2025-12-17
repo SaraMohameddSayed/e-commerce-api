@@ -18,15 +18,17 @@ namespace ViewModels
         public  List<orderproductViewModel>? products { get; set; }
         public OrderStatus status { get; set; } = OrderStatus.Pending;
 
-        public string country { get; set; }
-        public string city { get; set; }
+        public string governorateName { get; set; }
+        public string areaName { get; set; }
         public string address { get; set; }
         public string phone { get; set; }
 
         public bool isPaid { get; set; } = false;
-        public string paymentMethod { get; set; }  // cod / card
+        public PaymentMethod paymentMethod { get; set; } 
 
         public decimal totalAmount { get; set; }
+        public decimal subTotal { get; set; }
+        public decimal deliveryFee { get; set; }
 
         public string? notes { get; set; }
 

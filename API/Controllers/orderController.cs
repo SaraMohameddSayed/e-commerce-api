@@ -1,4 +1,5 @@
 using Humanizer;
+using Infrastructure;
 using Managers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -36,62 +37,14 @@ namespace Controllers
         [HttpPost]
         public async Task<IActionResult> addOrder(addOrderViewModel addorderViewModel)
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var cartProducts = await cartProductManager.getAll().Where(cp => cp.cart.userId == userId).ToListAsync();
-            var order = new Order
-            {
-                userId = userId,
-                user=userManager.Users.FirstOrDefault(u=>u.Id==userId),
-                country = addorderViewModel.Country,
-                city = addorderViewModel.City,
-                address = addorderViewModel.Address,
-                phone = addorderViewModel.Phone,
-                paymentMethod = addorderViewModel.PaymentMethod,
-                notes = addorderViewModel.Notes,
-                status = OrderStatus.Pending,
-                createdAt = DateTime.Now,
-                updatedAt = DateTime.Now,
-                trackingNumber = $"ORD-{DateTime.UtcNow:yyMMddHHmmss}",
-                products = new List<OrderProduct>()
-            };
-            decimal totalAmount = 0;
-            foreach (var cartProduct in cartProducts)
-            {
-                var product = await productManager.getOne(cartProduct.productId);
+            addorderViewModel.userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; 
+            var order = await orderManager.CreateOrderFromCart(addorderViewModel);
 
-                decimal discountValue = product.offers?
-                    .OrderByDescending(o => o.applicationDate)
-                    .FirstOrDefault()?.discountValue ?? 0;
-
-                decimal discountedPrice = discountValue > 0 ? product.price - discountValue : product.price;
-
-                order.products.Add(new OrderProduct
-                {
-                    productId = cartProduct.productId,
-                    quantity = cartProduct.quantity,
-                    price = discountedPrice
-                });
-
-                // ÎÕã ÇáßãíÉ ãä ÇáãÎÒæä
-                if (product != null)
-                {
-                    product.quantity -= cartProduct.quantity;
-                }
-                // ÊÍÏíË ÅÌãÇáí ÇáØáÈ
-                totalAmount += discountedPrice * cartProduct.quantity;
-            }
-            order.totalAmount = totalAmount;
-            var result = await orderManager.Add(order);
-
-            if (result == false)
+            if (order == null)
             {
                 return BadRequest(new { message = "Failed to create order" });
             }
-            // ÍÐÝ ÇáãäÊÌÇÊ ãä ÇáÓáÉ ÈÚÏ ÅäÔÇÁ ÇáØáÈ
-            foreach (var cartProduct in cartProducts)
-            {
-                await cartProductManager.Delete(cartProduct);
-            }
+           
 
             return Ok(new { message = "Order created successfully", orderId = order.id });
 
@@ -105,7 +58,7 @@ namespace Controllers
         public IActionResult getAllOrdersByUserId()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var result = orderManager.getAll().Where(o=>o.userId==userId).Include(o=>o.products).Select(o=>o.toViewModel()).ToListAsync();
+            var result = orderManager.getAll().Where(o=>o.userId==userId).Include(o=>o.products).Include(o=>o.governorate).ThenInclude(g=>g.areas).Select(o=>o.toViewModel()).ToListAsync();
             if (result != null)
             {
                 return Ok(result);
@@ -137,10 +90,12 @@ namespace Controllers
                 shippedOrders = orders.Count(o => o.status == OrderStatus.Shipped),
                 deliveredOrders = orders.Count(o => o.status == OrderStatus.Delivered),
 
-                latestOrders = orders
+                latestOrders = orders?
                     .OrderByDescending(o => o.createdAt)
                     .Take(5)
                     .Include(o=> o.user)
+                    .Include(o => o.governorate)
+                    .ThenInclude(g => g.areas)
                     .Include(o => o.products)
                     .ThenInclude(o=>o.product)
                     .Select(o =>o.toViewModel()
@@ -156,7 +111,7 @@ namespace Controllers
         public IActionResult getAllOrders()
         {
 
-            var result = orderManager.getAll().Include(o=>o.user).Include(o => o.products).ThenInclude(o=>o.product).Select(o => o.toViewModel());
+            var result = orderManager.getAll().Include(o=>o.user).Include(o => o.products).ThenInclude(o=>o.product).Include(o => o.governorate).ThenInclude(g => g.areas).Select(o => o.toViewModel());
             if (result != null)
             {
                 return Ok(result);
@@ -170,8 +125,8 @@ namespace Controllers
         [HttpGet("status/{status}")]
         public async Task<IActionResult> getOrdersByStatus(OrderStatus status)
         {
-            var orders = await orderManager.getAll().Where(o => o.status == status).ToListAsync();
-            return Ok(orders.Select(o => o.toViewModel()));
+            var orders = await orderManager.getAll().Where(o => o.status == status).Include(o => o.governorate).ThenInclude(g => g.areas).Select(o => o.toViewModel()).ToListAsync();
+            return Ok(orders);
         }
         [HttpPut("{orderId}/status")]
         public async Task<IActionResult> updateOrderStatus(int orderId, [FromBody] OrderStatus newStatus)

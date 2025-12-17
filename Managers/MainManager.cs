@@ -25,12 +25,12 @@ public class MainManager<T> where T : class
     {
         try
         {
-            dbContext.Set<T>().AddAsync(_product);
+            await dbContext.Set<T>().AddAsync(_product);
             await dbContext.SaveChangesAsync();
             return true;
 
         }
-        catch (Exception)
+        catch
         {
             throw;
         }

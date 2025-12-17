@@ -1,4 +1,6 @@
 ﻿
+using Models;
+using Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,11 +11,12 @@ namespace ViewModels
 {
     public class addOrderViewModel
     {
-        public string Country { get; set; }
-        public string City { get; set; }
+        public string? userId { get; set; }
+        public int governorateId { get; set; }
+        public int areaId { get; set; }
         public string Address { get; set; }
         public string Phone { get; set; }
-        public string PaymentMethod { get; set; }
+        public PaymentMethod PaymentMethod { get; set; }
         public decimal TotalAmount { get; set; }
         public string Notes { get; set; }
 

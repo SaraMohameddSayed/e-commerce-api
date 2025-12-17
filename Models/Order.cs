@@ -10,28 +10,40 @@ public class Order
 {
     public int id { get; set; }
 
+    //User
     public string userId { get; set; }
     public virtual IdentityUser? user { get; set; }
-
+   
+    //Products
     public virtual List<OrderProduct>? products { get; set; }
-
+    
+    //Status
     public OrderStatus status { get; set; } = OrderStatus.Pending;
 
-    public string country { get; set; }
-    public string city { get; set; }
+    //Address
+    public int governorateId { get; set; }
+    public virtual Governorate governorate { get; set; }
+    public int areaId { get; set; } 
+    public virtual Area area { get; set; }
     public string address { get; set; }
     public string phone { get; set; }
 
+    //Payment
     public bool isPaid { get; set; } = false;
-    public string paymentMethod { get; set; }  // cod / card
+    public PaymentMethod paymentMethod { get; set; }  // cod / card
 
+    //Pricing
+    public decimal subTotal { get; set; }
     public decimal totalAmount { get; set; }
-
+    public decimal delivaryFee { get; set; }
+    
+    //Meta
     public string? notes { get; set; }
+    public string trackingNumber { get; set; }
 
+    //Dates
     public DateTime createdAt { get; set; } 
     public DateTime updatedAt { get; set; } 
-    public string trackingNumber { get; set; } 
 
 }
 
