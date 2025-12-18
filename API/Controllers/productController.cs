@@ -39,19 +39,20 @@ namespace Controllers
 
 
         [HttpGet]
-
-        public IActionResult getAllProducts()
+        public IActionResult GetAllProducts(int pageNumber = 1, int pageSize = 10)
         {
+            var (items, totalCount) = productManager.GetPagedProducts(pageNumber, pageSize);
 
-            var result = productManager.getAll().Include(p=>p.category).Include(p=>p.offers).ThenInclude(po=>po.offer).Select(p => p.toViewModel());
-            if (result != null)
+            var response = new
             {
-                return Ok(result);
-            }
-            else
-            {
-                return BadRequest(result);
-            }
+                items,
+                totalCount,
+                pageNumber,
+                pageSize,
+                totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
+            };
+
+            return Ok(response);
         }
     }
 }
