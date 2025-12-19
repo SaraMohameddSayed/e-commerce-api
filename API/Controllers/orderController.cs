@@ -125,7 +125,14 @@ namespace Controllers
         [HttpGet("status/{status}")]
         public async Task<IActionResult> getOrdersByStatus(OrderStatus status)
         {
-            var orders = await orderManager.getAll().Where(o => o.status == status).Include(o => o.governorate).ThenInclude(g => g.areas).Select(o => o.toViewModel()).ToListAsync();
+            var orders = await orderManager.getAll().Where(o => o.status == status)
+                .Include(o => o.user)
+                .Include(o => o.governorate)
+                    .ThenInclude(g => g.areas)
+                 .Include(o => o.products)
+                    .ThenInclude(o => o.product)
+                .Select(o => o.toViewModel())
+                .ToListAsync();
             return Ok(orders);
         }
         [HttpPut("{orderId}/status")]

@@ -15,10 +15,10 @@ namespace ViewModels
             return new orderproductViewModel
             {
                 orderId = orderProduct.orderId,
-                productName= orderProduct.product != null ? orderProduct.product.name : string.Empty,
+                productName= orderProduct.productName,
                 productId = orderProduct.productId,
                 quantity = orderProduct.quantity,
-                imageUrl = orderProduct.product != null ? orderProduct.product.imageUrl : string.Empty,
+                imageUrl = orderProduct.productImageUrl,
                 price = orderProduct.price
             };
         }

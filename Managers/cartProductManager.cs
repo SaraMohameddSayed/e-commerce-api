@@ -15,5 +15,20 @@ namespace Managers
         {
 
         }
+        public async Task<bool> clearCartByUserId(string userId)
+        {
+            var cartProducts = getAll().Where(cp => cp.cart.userId == userId);
+            try
+            {
+                dbContext.Set<CartProduct>().RemoveRange(cartProducts);
+                await dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                throw;
+            }
+        
+        }
     }
 }

@@ -14,6 +14,9 @@ namespace Models
         public int orderId { get; set; }
         public virtual Order? order { get; set; }
         public int productId { get; set; }
+        public string productName { get; set; }
+        public string productImageUrl { get; set; }
+
         public virtual Product? product { get; set; }
         public decimal price { get; set; }  
         public int quantity { get; set; }

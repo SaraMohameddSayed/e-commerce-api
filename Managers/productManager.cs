@@ -14,7 +14,7 @@ public class productManager : MainManager<Product>
     {
         dbContext=_context;
     }
-    public async Task<decimal> CalculateProductsTotal(IEnumerable<CartProduct> cartProducts,Order order)
+    public async Task<decimal> CalculateProductsTotal(IEnumerable<CartProduct> cartProducts)
     {
         decimal totalAmount = 0;
         foreach (var cartProduct in cartProducts)
@@ -27,18 +27,7 @@ public class productManager : MainManager<Product>
 
             decimal discountedPrice = discountValue > 0 ? product.price - discountValue : product.price;
 
-            order.products.Add(new OrderProduct
-            {
-                productId = cartProduct.productId,
-                quantity = cartProduct.quantity,
-                price = discountedPrice
-            });
-
-            // خصم الكمية من المخزون
-            if (product != null)
-            {
-                product.quantity -= cartProduct.quantity;
-            }
+           
             // تحديث إجمالي الطلب
             totalAmount += discountedPrice * cartProduct.quantity;
         }
@@ -62,4 +51,25 @@ public class productManager : MainManager<Product>
 
         return (items, totalCount);
     }
+
+public async Task<decimal> CalculateDiscountedPrice(int productId)
+    {
+        var product = await getOne(productId);
+        decimal discountValue = product.offers?
+            .OrderByDescending(o => o.applicationDate)
+            .FirstOrDefault()?.discountValue ?? 0;
+        decimal discountedPrice = discountValue > 0 ? product.price - discountValue : product.price;
+        return discountedPrice;
+    }
+
+public async void UpdateProductQuantity(int productId, int quantityToDeduct)
+    {
+        var product = await getOne(productId);
+        if (product != null)
+        {
+            product.quantity -= quantityToDeduct;
+            await dbContext.SaveChangesAsync();
+        }
+    }
+
 }

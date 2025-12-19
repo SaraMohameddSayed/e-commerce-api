@@ -13,21 +13,25 @@ public class orderManager : MainManager<Order>
     public productManager productManager;
     public UserManager<IdentityUser> userManager;
     public cartProductManager cartProductManager;
+    public orderProductManager orderProductManager;
     public governorateManager governorateManager;
 
     public DbContext dbContext;
-    public orderManager(dbContext _context, productManager _productManager, UserManager<IdentityUser> _userManager, cartProductManager _cartProductManager, governorateManager _governorateManager) : base(_context)
+    public orderManager(dbContext _context, productManager _productManager, UserManager<IdentityUser> _userManager, cartProductManager _cartProductManager, governorateManager _governorateManager, orderProductManager _orderProductManager) : base(_context)
     {
         productManager = _productManager;
         userManager = _userManager;
         cartProductManager = _cartProductManager;
         governorateManager = _governorateManager;
         dbContext = _context;
+        orderProductManager = _orderProductManager;
     }
 
     public async Task<Order> CreateOrderFromCart(addOrderViewModel addorderViewModel)
     {
         var cartProducts = await cartProductManager.getAll().Where(cp => cp.cart.userId == addorderViewModel.userId).ToListAsync();
+        var subTotal = await productManager.CalculateProductsTotal(cartProducts);
+        var orderProducts = orderProductManager.GenerateOrderProductsFromCartProducts(cartProducts);
         var governorate = await governorateManager.getAll()
      .FirstOrDefaultAsync(g => g.id == addorderViewModel.governorateId);
 
@@ -48,21 +52,17 @@ public class orderManager : MainManager<Order>
             createdAt = DateTime.Now,
             updatedAt = DateTime.Now,
             trackingNumber = $"ORD-{DateTime.UtcNow:yyMMddHHmmss}",
-            products = new List<OrderProduct>()
+            subTotal=subTotal,
+            totalAmount=subTotal + governorate.deliveryFee,
+            products = orderProducts
         };
-        var subTotal = await productManager.CalculateProductsTotal(cartProducts, order);
-        order.subTotal = subTotal;
-        order.totalAmount = subTotal + order.delivaryFee;
+
         try
         {
-
         await dbContext.Set<Order>().AddAsync(order);
         await dbContext.SaveChangesAsync();
             // حذف المنتجات من السلة بعد إنشاء الطلب
-            foreach (var cartProduct in cartProducts)
-            {
-                await cartProductManager.Delete(cartProduct);
-            }
+           await cartProductManager.clearCartByUserId(addorderViewModel.userId); 
             return order;
         }
         catch
