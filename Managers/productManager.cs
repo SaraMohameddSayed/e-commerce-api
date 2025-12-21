@@ -72,4 +72,23 @@ public async void UpdateProductQuantity(int productId, int quantityToDeduct)
         }
     }
 
+    public async Task<bool> updateProduct(updateProductViewModel _updateProductViewModel)
+    {
+        var product = await getOne(_updateProductViewModel.id);
+        product!.name = _updateProductViewModel.name;
+        product.description = _updateProductViewModel.description;
+        product.price = _updateProductViewModel.price;
+        product.quantity = _updateProductViewModel.quantity;
+        product.categoryId = _updateProductViewModel.categoryId;
+        product.imageUrl = _updateProductViewModel.imageUrl!;
+        try
+        {
+            await Update(product);
+            return true;
+        }
+        catch 
+        {
+            throw;
+        }
+    }
 }
