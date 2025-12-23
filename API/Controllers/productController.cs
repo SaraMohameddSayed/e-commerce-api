@@ -40,20 +40,14 @@ namespace Controllers
 
 
         [HttpGet]
-        public IActionResult GetAllProducts(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAllProducts(int? categoryId, string? searchText,int pageNumber = 1, int pageSize = 9)
         {
-            var (items, totalCount) = productManager.GetPagedProducts(pageNumber, pageSize);
+            pageNumber=pageNumber<1?1:pageNumber;
+            pageSize=pageSize>9?9:pageSize;
+            var result = await productManager.GetPagedProducts(categoryId, searchText,pageNumber, pageSize);
 
-            var response = new
-            {
-                items,
-                totalCount,
-                pageNumber,
-                pageSize,
-                totalPages = (int)Math.Ceiling(totalCount / (double)pageSize)
-            };
 
-            return Ok(response);
+            return Ok(result);
         }
 
 

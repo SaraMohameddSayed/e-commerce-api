@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Models;
 using System;
+using System.Threading.Tasks;
 using ViewModels;
 namespace Managers;
 
@@ -34,22 +35,41 @@ public class productManager : MainManager<Product>
         return totalAmount;
     }
 
-    public (List<ProductViewModel> Items, int TotalCount) GetPagedProducts(int pageNumber, int pageSize)
+    public async Task<PagedResult<ProductViewModel>> GetPagedProducts(int? categoryId,string? searchText,int pageNumber, int pageSize)
     {
-        var query = dbContext.Set<Product>()
+        IQueryable<Product> query = dbContext.Set<Product>()
             .Include(p => p.category)
             .Include(p => p.offers)
-                .ThenInclude(po => po.offer)
-            .Select(p => p.toViewModel());
+                .ThenInclude(po => po.offer);
+            
 
+       
+        if (categoryId!=null)
+        {
+
+            query=query.Where(p => p.category.id == categoryId);
+
+        }
+        if (!string.IsNullOrWhiteSpace(searchText))
+        {
+           query= query.Where(p => p.name.Contains(searchText) || p.description.Contains(searchText));
+        }
         int totalCount = query.Count();
 
-        var items = query
+        var pagedItems = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .ToList();
+            .Select(p=>p.toViewModel())
+            .ToListAsync();
+        return new PagedResult<ProductViewModel>
+        {
+            Items = pagedItems,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
 
-        return (items, totalCount);
+
     }
 
 public async Task<decimal> CalculateDiscountedPrice(int productId)
