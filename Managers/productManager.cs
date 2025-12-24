@@ -37,13 +37,16 @@ public class productManager : MainManager<Product>
 
     public async Task<PagedResult<ProductViewModel>> GetPagedProducts(int? categoryId,string? searchText,int pageNumber, int pageSize)
     {
+        pageNumber = pageNumber < 1 ? 1 : pageNumber;
+        pageSize = pageSize > 9 ? 9 : pageSize;
         IQueryable<Product> query = dbContext.Set<Product>()
             .Include(p => p.category)
             .Include(p => p.offers)
-                .ThenInclude(po => po.offer);
-            
+                .ThenInclude(po => po.offer)
+                .Where(p => p.isActive); 
 
-       
+
+
         if (categoryId!=null)
         {
 
@@ -110,5 +113,16 @@ public async void UpdateProductQuantity(int productId, int quantityToDeduct)
         {
             throw;
         }
+    }
+    public async Task<bool> softDeleteProduct(int productId)
+    {
+        var product = await getOne(productId);
+        if (product != null)
+        {
+            product.isActive = false;
+            await dbContext.SaveChangesAsync();
+            return true;
+        }
+        return false;
     }
 }

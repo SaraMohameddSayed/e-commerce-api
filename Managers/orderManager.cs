@@ -70,4 +70,39 @@ public class orderManager : MainManager<Order>
             throw;
         }
     }
+
+    public async Task<PagedResult<orderViewModel>> GetPagedOrders(string? trackingNumber,OrderStatus? orderStatus ,int pageNumber, int pageSize)
+    {
+        pageNumber = pageNumber < 1 ? 1 : pageNumber;
+        pageSize = pageSize > 9 ? 9 : pageSize;
+        IQueryable<Order> query = dbContext.Set<Order>()
+            .Include(o => o.user)
+            .Include(o => o.governorate)
+                .ThenInclude(g => g.areas)
+             .Include(o => o.products)
+                .ThenInclude(o => o.product)
+            .OrderByDescending(o => o.createdAt);
+        if (trackingNumber != null)
+        {
+           query=query.Where(o => o.trackingNumber == trackingNumber);
+        }
+        if(orderStatus != null)
+        {
+           query= query.Where(o => o.status == orderStatus);
+        }
+        int totalCount = await query.CountAsync();
+        var pagedItems = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
+            .Select(o => o.toViewModel())
+            .ToListAsync();
+        return new PagedResult<orderViewModel>
+        {
+            Items = pagedItems,
+            TotalCount = totalCount,
+            PageNumber = pageNumber,
+            PageSize = pageSize
+        };
+    }
+
 }

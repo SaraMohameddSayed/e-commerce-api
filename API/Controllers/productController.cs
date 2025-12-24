@@ -42,8 +42,7 @@ namespace Controllers
         [HttpGet]
         public async Task<IActionResult> GetAllProducts(int? categoryId, string? searchText,int pageNumber = 1, int pageSize = 9)
         {
-            pageNumber=pageNumber<1?1:pageNumber;
-            pageSize=pageSize>9?9:pageSize;
+            
             var result = await productManager.GetPagedProducts(categoryId, searchText,pageNumber, pageSize);
 
 
@@ -82,7 +81,7 @@ namespace Controllers
             {
                 return NotFound("Product not found.");
             }
-            var result = await productManager.Delete(product);
+            var result = await productManager.softDeleteProduct(product.id);
             if (result)
             {
                 return Ok(result);

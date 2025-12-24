@@ -95,9 +95,9 @@ namespace Controllers
                     .Take(5)
                     .Include(o=> o.user)
                     .Include(o => o.governorate)
-                    .ThenInclude(g => g.areas)
+                        .ThenInclude(g => g.areas)
                     .Include(o => o.products)
-                    .ThenInclude(o=>o.product)
+                        .ThenInclude(o=>o.product)
                     .Select(o =>o.toViewModel()
                     )
                     .ToList()
@@ -108,10 +108,10 @@ namespace Controllers
 
         [HttpGet]
 
-        public IActionResult getAllOrders()
+        public async Task<IActionResult> getAllOrders(string? trackingNumber,OrderStatus? orderStatus,int pageNumber=1, int pageSize = 9)
         {
-
-            var result = orderManager.getAll().Include(o=>o.user).Include(o => o.products).ThenInclude(o=>o.product).Include(o => o.governorate).ThenInclude(g => g.areas).Select(o => o.toViewModel());
+            
+            var result =await orderManager.GetPagedOrders(trackingNumber,orderStatus,pageNumber,pageSize);
             if (result != null)
             {
                 return Ok(result);
@@ -122,19 +122,7 @@ namespace Controllers
             }
         }
 
-        [HttpGet("status/{status}")]
-        public async Task<IActionResult> getOrdersByStatus(OrderStatus status)
-        {
-            var orders = await orderManager.getAll().Where(o => o.status == status)
-                .Include(o => o.user)
-                .Include(o => o.governorate)
-                    .ThenInclude(g => g.areas)
-                 .Include(o => o.products)
-                    .ThenInclude(o => o.product)
-                .Select(o => o.toViewModel())
-                .ToListAsync();
-            return Ok(orders);
-        }
+       
         [HttpPut("{orderId}/status")]
         public async Task<IActionResult> updateOrderStatus(int orderId, [FromBody] OrderStatus newStatus)
         {

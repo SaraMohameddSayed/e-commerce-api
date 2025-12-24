@@ -21,5 +21,11 @@ namespace Controllers
             var governorates = governorateManager.getAll().Include(g => g.areas).Select(g => g.ToViewModel()).ToList();
             return Ok(governorates);
         }
+        [HttpPost]
+        public IActionResult addGovernorate([FromBody] governorateViewModel governorateViewModel)
+        {
+            var governorate = governorateManager.Add(governorateViewModel.toModel());
+            return Ok();
+        }
     }
 }

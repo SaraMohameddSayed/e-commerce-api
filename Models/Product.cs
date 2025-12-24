@@ -20,6 +20,7 @@ public class Product
     public string description { get; set; }
 
     public int categoryId { get; set; }
+    public bool isActive { get; set; } = true;
 
     public virtual Category category { get; set; }
 
