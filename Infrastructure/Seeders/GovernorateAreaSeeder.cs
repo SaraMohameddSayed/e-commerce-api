@@ -22,11 +22,12 @@ namespace Infrastructure.Seeders
                 deliveryFee = 20,
                 areas = new List<Area>
                 {
-                    new Area { name = "مدينة نصر" },
-                    new Area { name = "المعادي" },
-                    new Area { name = "الزمالك" },
-                    new Area { name = "حلوان" }
-                }
+                    new Area { name = "مدينة نصر" ,isActive=true},
+                    new Area { name = "المعادي" ,isActive=true},
+                    new Area { name = "الزمالك" ,isActive=true},
+                    new Area { name = "حلوان" , isActive=true}
+                },
+                isActive=true
             },
             new Governorate
             {
@@ -34,11 +35,12 @@ namespace Infrastructure.Seeders
                 deliveryFee = 25,
                 areas = new List<Area>
                 {
-                    new Area { name = "الدقي" },
-                    new Area { name = "المهندسين" },
-                    new Area { name = "6 أكتوبر" },
-                    new Area { name = "الشيخ زايد" }
-                }
+                    new Area { name = "الدقي",isActive=true },
+                    new Area { name = "المهندسين" , isActive = true},
+                    new Area { name = "6 أكتوبر" , isActive = true},
+                    new Area { name = "الشيخ زايد" , isActive = true}
+                },
+                isActive=true
             },
             new Governorate
             {
@@ -46,10 +48,11 @@ namespace Infrastructure.Seeders
                deliveryFee = 30,
                areas = new List<Area>
                {
-                   new Area { name = "سيدي جابر" },
-                   new Area { name = "محرم بك" },
-                   new Area { name = "العجمي" }
-                }
+                   new Area { name = "سيدي جابر" ,isActive=true},
+                   new Area { name = "محرم بك" ,isActive=true },
+                   new Area { name = "العجمي" ,isActive=true }
+                },
+                isActive=true
              },
             new Governorate
             {
@@ -57,9 +60,10 @@ namespace Infrastructure.Seeders
                 deliveryFee = 15,
                 areas = new List<Area>
                 {
-                    new Area { name = "المنصورة الجديدة" },
-                    new Area { name = "ميت غمر" }
-                }
+                    new Area { name = "المنصورة الجديدة",isActive=true },
+                    new Area { name = "ميت غمر" ,isActive=true }
+                },
+                isActive=true
             }
            };
             await _context.Governorate.AddRangeAsync(governorates);

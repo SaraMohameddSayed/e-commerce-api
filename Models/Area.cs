@@ -16,6 +16,7 @@ namespace Models
 
         public int governorateId { get; set; }
         public virtual Governorate governorate { get; set; }
+        public bool isActive { get; set; } = true;
     }
     public class AreaConfiguration : IEntityTypeConfiguration<Area>
     {

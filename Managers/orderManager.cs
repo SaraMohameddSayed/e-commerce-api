@@ -15,9 +15,9 @@ public class orderManager : MainManager<Order>
     public cartProductManager cartProductManager;
     public orderProductManager orderProductManager;
     public governorateManager governorateManager;
-
+    public areaManager areaManager;
     public DbContext dbContext;
-    public orderManager(dbContext _context, productManager _productManager, UserManager<IdentityUser> _userManager, cartProductManager _cartProductManager, governorateManager _governorateManager, orderProductManager _orderProductManager) : base(_context)
+    public orderManager(dbContext _context, productManager _productManager, UserManager<IdentityUser> _userManager, cartProductManager _cartProductManager, governorateManager _governorateManager, orderProductManager _orderProductManager, areaManager _areaManager) : base(_context)
     {
         productManager = _productManager;
         userManager = _userManager;
@@ -25,6 +25,7 @@ public class orderManager : MainManager<Order>
         governorateManager = _governorateManager;
         dbContext = _context;
         orderProductManager = _orderProductManager;
+        this.areaManager = _areaManager;
     }
 
     public async Task<Order> CreateOrderFromCart(addOrderViewModel addorderViewModel)
@@ -34,6 +35,8 @@ public class orderManager : MainManager<Order>
         var orderProducts = orderProductManager.GenerateOrderProductsFromCartProducts(cartProducts);
         var governorate = await governorateManager.getAll()
      .FirstOrDefaultAsync(g => g.id == addorderViewModel.governorateId);
+        var area = await areaManager.getAll()
+     .FirstOrDefaultAsync(a => a.id == addorderViewModel.areaId);
 
         if (governorate == null)
             throw new Exception("Governorate not supported");
@@ -42,7 +45,9 @@ public class orderManager : MainManager<Order>
             userId = addorderViewModel.userId,
             user = userManager.Users.FirstOrDefault(u => u.Id == addorderViewModel.userId),
             governorateId = addorderViewModel.governorateId,
+            governorateName=governorate.name,
             areaId = addorderViewModel.areaId,
+            areaName=area.name,
             address = addorderViewModel.Address,
             phone = addorderViewModel.Phone,
             paymentMethod = addorderViewModel.PaymentMethod,

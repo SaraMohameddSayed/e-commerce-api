@@ -18,14 +18,13 @@ namespace ViewModels
                 governorateId = area.governorateId
             };
         }
-        public static Area toModel(this areaViewModel areaViewModel)
+        public static Area toModel(this addAreaViewModel addAreaViewModel)
         {
-            if (areaViewModel == null) return null;
+            if (addAreaViewModel == null) return null;
             return new Area
             {
-                id = areaViewModel.id,
-                name = areaViewModel.name,
-                governorateId = areaViewModel.governorateId
+                name = addAreaViewModel.name,
+                governorateId = addAreaViewModel.governorateId
             };
         }
     }

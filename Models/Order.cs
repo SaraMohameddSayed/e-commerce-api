@@ -22,8 +22,10 @@ public class Order
 
     //Address
     public int governorateId { get; set; }
+    public string governorateName { get; set; }
     public virtual Governorate governorate { get; set; }
     public int areaId { get; set; } 
+    public string areaName { get; set; }
     public virtual Area area { get; set; }
     public string address { get; set; }
     public string phone { get; set; }

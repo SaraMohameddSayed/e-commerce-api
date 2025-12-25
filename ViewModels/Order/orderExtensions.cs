@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace ViewModels
 {
     public static class orderExtensions
@@ -20,8 +21,8 @@ namespace ViewModels
                 customerName=order.user.UserName,
                 products = order.products?.Select(op => op.toViewModel()).ToList(),
                 status = order.status,
-                governorateName = order.governorate.ToViewModel().name,
-                areaName = order.area.ToViewModel().name,
+                governorateName = order.governorateName,
+                areaName = order.areaName,
                 address = order.address,
                 phone = order.phone,
                 isPaid = order.isPaid,

@@ -13,8 +13,8 @@ namespace Models
         public int id { get; set; }
         public string name { get; set; }
         public decimal deliveryFee { get; set; }
-
         public virtual ICollection<Area> areas { get; set; }
+        public bool isActive { get; set; } = true;
 
     }
     public class GovernorateConfiguration : IEntityTypeConfiguration<Governorate>

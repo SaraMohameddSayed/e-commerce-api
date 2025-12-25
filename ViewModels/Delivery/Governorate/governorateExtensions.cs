@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Models;
+using ViewModels;
 namespace ViewModels
 {
     public static class governorateExtensions
@@ -20,15 +21,13 @@ namespace ViewModels
             };
         }
 
-        public static Governorate toModel(this governorateViewModel governorateViewModel)
+        public static Governorate toModel(this addGovernorateViewModel addGovernorateViewModel)
         {
-            if (governorateViewModel == null) return null;
+            if (addGovernorateViewModel == null) return null;
             return new Governorate
             {
-                id = governorateViewModel.id,
-                name = governorateViewModel.name,
-                deliveryFee = governorateViewModel.deliveryFee,
-                areas = governorateViewModel.areas?.Select(a => a.toModel()).ToList()
+                name = addGovernorateViewModel.name,
+                deliveryFee = addGovernorateViewModel.deliveryFee,
             };
         }
     }

@@ -93,7 +93,7 @@ builder.Services.AddScoped<cloudinaryManager>();
 builder.Services.AddScoped<accountManager>();
 builder.Services.AddScoped<tokenManager>();
 builder.Services.AddScoped<governorateManager>();
-
+builder.Services.AddScoped<areaManager>();
 
 
 var app = builder.Build();
