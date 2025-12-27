@@ -9,6 +9,5 @@ namespace ViewModels
     public class addGovernorateViewModel
     {
         public string name { get; set; }
-        public decimal deliveryFee { get; set; }
     }
 }

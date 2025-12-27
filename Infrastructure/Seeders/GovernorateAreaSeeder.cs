@@ -19,49 +19,45 @@ namespace Infrastructure.Seeders
             new Governorate
             {
                 name = "القاهرة",
-                deliveryFee = 20,
                 areas = new List<Area>
                 {
-                    new Area { name = "مدينة نصر" ,isActive=true},
-                    new Area { name = "المعادي" ,isActive=true},
-                    new Area { name = "الزمالك" ,isActive=true},
-                    new Area { name = "حلوان" , isActive=true}
+                    new Area { name = "مدينة نصر" ,isActive=true,deliveryFee=15},
+                    new Area { name = "المعادي" ,isActive=true,deliveryFee=20},
+                    new Area { name = "الزمالك" ,isActive=true,deliveryFee=25},
+                    new Area { name = "حلوان" , isActive=true,deliveryFee=30}
                 },
                 isActive=true
             },
             new Governorate
             {
                 name = "الجيزة",
-                deliveryFee = 25,
                 areas = new List<Area>
                 {
                     new Area { name = "الدقي",isActive=true },
-                    new Area { name = "المهندسين" , isActive = true},
-                    new Area { name = "6 أكتوبر" , isActive = true},
-                    new Area { name = "الشيخ زايد" , isActive = true}
+                    new Area { name = "المهندسين" , isActive = true,deliveryFee=35},
+                    new Area { name = "6 أكتوبر" , isActive = true,deliveryFee=40},
+                    new Area { name = "الشيخ زايد" , isActive = true,deliveryFee=45}
                 },
                 isActive=true
             },
             new Governorate
             {
                name = "الإسكندرية",
-               deliveryFee = 30,
                areas = new List<Area>
                {
-                   new Area { name = "سيدي جابر" ,isActive=true},
-                   new Area { name = "محرم بك" ,isActive=true },
-                   new Area { name = "العجمي" ,isActive=true }
+                   new Area { name = "سيدي جابر" ,isActive=true,deliveryFee=50},
+                   new Area { name = "محرم بك" ,isActive=true ,deliveryFee=55},
+                   new Area { name = "العجمي" ,isActive=true ,deliveryFee=60}
                 },
                 isActive=true
              },
             new Governorate
             {
                 name = "المنصورة",
-                deliveryFee = 15,
                 areas = new List<Area>
                 {
-                    new Area { name = "المنصورة الجديدة",isActive=true },
-                    new Area { name = "ميت غمر" ,isActive=true }
+                    new Area { name = "المنصورة الجديدة",isActive=true ,deliveryFee=65},
+                    new Area { name = "ميت غمر" ,isActive=true ,deliveryFee=70}
                 },
                 isActive=true
             }

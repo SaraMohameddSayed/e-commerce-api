@@ -28,6 +28,12 @@ namespace Controllers
             var governorates = governorateManager.getAll().Include(g => g.areas).Select(g => g.ToViewModel()).ToList();
             return Ok(governorates);
         }
+        [HttpGet("governorates/active")]
+        public IActionResult getActiveGovernorates()
+        {
+            var governorates = governorateManager.getAll().Where(g=>g.isActive==true).Include(g => g.areas).Select(g => g.ToViewModel()).ToList();
+            return Ok(governorates);
+        }
         [HttpPost("governorate")]
         public async  Task<IActionResult> addGovernorate([FromBody] addGovernorateViewModel addGovernorateViewModel)
         {
@@ -57,10 +63,10 @@ namespace Controllers
             }
         }
 
-        [HttpDelete("governorates/{id}")]
-        public async Task<IActionResult> deleteGovernorate(int id)
+        [HttpPut("governorateStatus/{id}")]
+        public async Task<IActionResult> updateGovernorateStatus(int id)
         {
-            var result = await governorateManager.softDeleteGovernorate(id);
+            var result = await governorateManager.updateGovernorateStatus(id);
             return Ok(result);
         }
 
@@ -80,10 +86,10 @@ namespace Controllers
             var result = await areaManager.updateArea(updateAreaViewModel);
             return Ok(result);
         }
-        [HttpDelete("areas/{id}")]
-        public async Task<IActionResult> deleteArea(int id)
+        [HttpPut("areaStatus/{id}")]
+        public async Task<IActionResult> updateAreaStatus(int id)
         {
-            var result = await areaManager.softDeleteArea(id);
+            var result = await areaManager.updateAreaStatus(id);
             return Ok(result);
         }
     }

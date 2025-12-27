@@ -16,7 +16,7 @@ namespace ViewModels
             {
                 id = governorate.id,
                 name = governorate.name,
-                deliveryFee = governorate.deliveryFee,
+                isActive=governorate.isActive,
                 areas = governorate.areas?.Select(a => a.ToViewModel()).ToList()
             };
         }
@@ -27,7 +27,6 @@ namespace ViewModels
             return new Governorate
             {
                 name = addGovernorateViewModel.name,
-                deliveryFee = addGovernorateViewModel.deliveryFee,
             };
         }
     }

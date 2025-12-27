@@ -9,6 +9,7 @@ namespace ViewModels
     public class addAreaViewModel
     {
         public string name { get; set; }
+        public decimal deliveryFee { get; set; }
         public int governorateId { get; set; }
     }
 }

@@ -44,21 +44,19 @@ public class orderManager : MainManager<Order>
         {
             userId = addorderViewModel.userId,
             user = userManager.Users.FirstOrDefault(u => u.Id == addorderViewModel.userId),
-            governorateId = addorderViewModel.governorateId,
             governorateName=governorate.name,
-            areaId = addorderViewModel.areaId,
             areaName=area.name,
             address = addorderViewModel.Address,
             phone = addorderViewModel.Phone,
             paymentMethod = addorderViewModel.PaymentMethod,
-            delivaryFee = governorate.deliveryFee,
+            delivaryFee = area.deliveryFee,
             notes = addorderViewModel.Notes,
             status = OrderStatus.Pending,
             createdAt = DateTime.Now,
             updatedAt = DateTime.Now,
             trackingNumber = $"ORD-{DateTime.UtcNow:yyMMddHHmmss}",
             subTotal=subTotal,
-            totalAmount=subTotal + governorate.deliveryFee,
+            totalAmount=subTotal + area.deliveryFee,
             products = orderProducts
         };
 
@@ -82,8 +80,6 @@ public class orderManager : MainManager<Order>
         pageSize = pageSize > 9 ? 9 : pageSize;
         IQueryable<Order> query = dbContext.Set<Order>()
             .Include(o => o.user)
-            .Include(o => o.governorate)
-                .ThenInclude(g => g.areas)
              .Include(o => o.products)
                 .ThenInclude(o => o.product)
             .OrderByDescending(o => o.createdAt);

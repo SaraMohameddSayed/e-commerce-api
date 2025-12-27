@@ -15,6 +15,8 @@ namespace ViewModels
             {
                 id = area.id,
                 name = area.name,
+                isActive= area.isActive,
+                deliveryFee = area.deliveryFee,
                 governorateId = area.governorateId
             };
         }
@@ -24,6 +26,7 @@ namespace ViewModels
             return new Area
             {
                 name = addAreaViewModel.name,
+                deliveryFee = addAreaViewModel.deliveryFee,
                 governorateId = addAreaViewModel.governorateId
             };
         }

@@ -24,19 +24,21 @@ namespace Managers
                 return false;
             }
             area.name = updateAreaViewModel.name;
+            area.deliveryFee = updateAreaViewModel.deliveryFee;
+
             context.Update(area);
             await context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> softDeleteArea(int id)
+        public async Task<bool> updateAreaStatus(int id)
         {
             var area = await getOne(id);
             if (area == null)
             {
                 return false;
             }
-            area.isActive = false;
+            area.isActive = !area.isActive;
             await context.SaveChangesAsync();
             return true;
         }

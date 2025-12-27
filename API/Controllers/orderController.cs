@@ -58,7 +58,7 @@ namespace Controllers
         public IActionResult getAllOrdersByUserId()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var result = orderManager.getAll().Where(o=>o.userId==userId).Include(o=>o.products).Include(o=>o.governorate).ThenInclude(g=>g.areas).Select(o=>o.toViewModel()).ToListAsync();
+            var result = orderManager.getAll().Where(o=>o.userId==userId).Include(o=>o.products).Select(o=>o.toViewModel()).ToListAsync();
             if (result != null)
             {
                 return Ok(result);
@@ -94,8 +94,6 @@ namespace Controllers
                     .OrderByDescending(o => o.createdAt)
                     .Take(5)
                     .Include(o=> o.user)
-                    .Include(o => o.governorate)
-                        .ThenInclude(g => g.areas)
                     .Include(o => o.products)
                         .ThenInclude(o=>o.product)
                     .Select(o =>o.toViewModel()

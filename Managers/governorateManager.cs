@@ -25,24 +25,31 @@ namespace Managers
                 return false;
             }
             governorate.name = updateGovernorateViewModel.name;
-            governorate.deliveryFee = updateGovernorateViewModel.deliveryFee;
             context.Update(governorate);
             await context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> softDeleteGovernorate(int id)
+        public async Task<bool> updateGovernorateStatus(int id)
         {
             var governorate = await getOne(id);
             if (governorate == null)
             {
                 return false;
             }
-            governorate.isActive = false;
+            governorate.isActive = !governorate.isActive;
             var areas = await context.Set<Area>().Where(a => a.governorateId == id).ToListAsync();
             foreach (var area in areas)
             {
-                area.isActive = false;
+                if (governorate.isActive == false) {
+                    area.isActive = false;
+
+                }
+                else
+                {
+                    area.isActive = true;
+
+                }
             }
             await context.SaveChangesAsync();
             return true;
