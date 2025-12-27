@@ -11,10 +11,11 @@ namespace Managers
     public class areaManager:MainManager<Area>
     {
         public dbContext context;
-
-        public areaManager(dbContext _context) : base(_context)
+        public governorateManager governorateManager;
+        public areaManager(dbContext _context,governorateManager _governorateManager) : base(_context)
         {
             context = _context;
+            governorateManager = _governorateManager;
         }
         public async Task<bool> updateArea(updateAreaViewModel updateAreaViewModel)
         {
@@ -39,6 +40,18 @@ namespace Managers
                 return false;
             }
             area.isActive = !area.isActive;
+            var governorate =await governorateManager.getOne(area.governorateId);
+            if (area.isActive == false && !governorate.areas.Any(a => a.isActive == true))
+            {
+                governorate.isActive = false;
+                await governorateManager.Update(governorate);
+            }
+            if (area.isActive == true)
+            {
+                governorate.isActive=true;
+                await governorateManager.Update(governorate);
+
+            }
             await context.SaveChangesAsync();
             return true;
         }
