@@ -8,7 +8,7 @@ namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class productOfferController : ControllerBase
+    public class productOfferController : BaseController
     {
 
         public productOfferManager productOfferManager;

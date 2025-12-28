@@ -9,7 +9,7 @@ namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class messageController : ControllerBase
+    public class messageController : BaseController
     {
         public messageManager messageManager;
         public messageController(messageManager _messageManager)

@@ -15,7 +15,7 @@ namespace Controllers
     [ApiController]
     [Authorize]
 
-    public class cartController : ControllerBase
+    public class cartController : BaseController
     {
         public cartManager cartManager;
         public cartProductManager cartProductManager;

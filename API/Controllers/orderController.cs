@@ -16,7 +16,7 @@ namespace Controllers
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class orderController : ControllerBase
+    public class orderController : BaseController
     {
         public orderManager orderManager;
         public productManager productManager;

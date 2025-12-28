@@ -9,7 +9,7 @@ namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class productController : ControllerBase
+    public class productController : BaseController
     {
         public productManager productManager;
         public cloudinaryManager cloudinaryManager;

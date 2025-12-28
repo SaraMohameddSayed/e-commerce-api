@@ -9,7 +9,7 @@ namespace Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class deliveryController : ControllerBase
+    public class deliveryController : BaseController
     {
         public governorateManager governorateManager;
         public areaManager areaManager;

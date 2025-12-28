@@ -10,7 +10,7 @@ namespace Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class categoryController : ControllerBase
+    public class categoryController : BaseController
     {
         public categoryManager categoryManager;
         public categoryController(categoryManager _categoryManager)

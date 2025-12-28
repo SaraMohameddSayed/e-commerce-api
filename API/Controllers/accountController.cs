@@ -8,7 +8,7 @@ namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class accountController : ControllerBase
+    public class accountController : BaseController
     {
         public accountManager accountManager;
         public accountController(accountManager _accountManager)
