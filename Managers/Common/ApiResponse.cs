@@ -13,16 +13,17 @@ namespace Managers
         public string? Message { get; set; }
         public T? Data { get; set; }
         public List<string>? Errors { get; set; }
-    }
-    private ApiResponse() { }
-        public static ApiResponse<T> SuccessReponse(int statusCode,string? message,T? data)
+
+
+        private ApiResponse() { }
+        public static ApiResponse<T> SuccessReponse(int statusCode, string? message, T? data)
         {
             return new ApiResponse<T>()
             {
-                Success=true,
-                StatusCode=statusCode,
-                Message=message,
-                Data=data
+                Success = true,
+                StatusCode = statusCode,
+                Message = message,
+                Data = data
 
             };
         }
@@ -33,9 +34,12 @@ namespace Managers
                 Success = false,
                 StatusCode = statusCode,
                 Message = message,
-                Errors=errors
+                Errors = errors
 
             };
         }
-    }
+
+    };
+ 
+    
 }

@@ -33,10 +33,10 @@ namespace Infrastructure.Seeders
                 name = "الجيزة",
                 areas = new List<Area>
                 {
-                    new Area { name = "الدقي",isActive=true },
-                    new Area { name = "المهندسين" , isActive = true,deliveryFee=35},
-                    new Area { name = "6 أكتوبر" , isActive = true,deliveryFee=40},
-                    new Area { name = "الشيخ زايد" , isActive = true,deliveryFee=45}
+                    new Area { name = "الدقي",isActive=true,deliveryFee=35 },
+                    new Area { name = "المهندسين" , isActive = true,deliveryFee=40},
+                    new Area { name = "6 أكتوبر" , isActive = true,deliveryFee=45},
+                    new Area { name = "الشيخ زايد" , isActive = true,deliveryFee=50}
                 },
                 isActive=true
             },
@@ -45,9 +45,9 @@ namespace Infrastructure.Seeders
                name = "الإسكندرية",
                areas = new List<Area>
                {
-                   new Area { name = "سيدي جابر" ,isActive=true,deliveryFee=50},
-                   new Area { name = "محرم بك" ,isActive=true ,deliveryFee=55},
-                   new Area { name = "العجمي" ,isActive=true ,deliveryFee=60}
+                   new Area { name = "سيدي جابر" ,isActive=true,deliveryFee=55},
+                   new Area { name = "محرم بك" ,isActive=true ,deliveryFee=60},
+                   new Area { name = "العجمي" ,isActive=true ,deliveryFee=70}
                 },
                 isActive=true
              },
@@ -56,8 +56,8 @@ namespace Infrastructure.Seeders
                 name = "المنصورة",
                 areas = new List<Area>
                 {
-                    new Area { name = "المنصورة الجديدة",isActive=true ,deliveryFee=65},
-                    new Area { name = "ميت غمر" ,isActive=true ,deliveryFee=70}
+                    new Area { name = "المنصورة الجديدة",isActive=true ,deliveryFee=75},
+                    new Area { name = "ميت غمر" ,isActive=true ,deliveryFee=80}
                 },
                 isActive=true
             }
