@@ -1,11 +1,16 @@
 ﻿using Infrastructure;
+using Managers.Events;
+using Managers.Interfaces;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
 using Models;
 using Models.Enums;
 using System;
 using ViewModels;
-using Microsoft.EntityFrameworkCore;
 namespace Managers;
 
 public class orderManager : MainManager<Order>
@@ -16,8 +21,9 @@ public class orderManager : MainManager<Order>
     public orderProductManager orderProductManager;
     public governorateManager governorateManager;
     public areaManager areaManager;
+    public IEventBus eventBus;
     public DbContext dbContext;
-    public orderManager(dbContext _context, productManager _productManager, UserManager<IdentityUser> _userManager, cartProductManager _cartProductManager, governorateManager _governorateManager, orderProductManager _orderProductManager, areaManager _areaManager) : base(_context)
+    public orderManager(dbContext _context, productManager _productManager, UserManager<IdentityUser> _userManager, cartProductManager _cartProductManager, governorateManager _governorateManager, orderProductManager _orderProductManager, areaManager _areaManager,IEventBus _eventBus) : base(_context)
     {
         productManager = _productManager;
         userManager = _userManager;
@@ -25,7 +31,8 @@ public class orderManager : MainManager<Order>
         governorateManager = _governorateManager;
         dbContext = _context;
         orderProductManager = _orderProductManager;
-        this.areaManager = _areaManager;
+        areaManager = _areaManager;
+        eventBus = _eventBus;
     }
 
     public async Task<Order> CreateOrderFromCart(addOrderViewModel addorderViewModel)
@@ -106,4 +113,21 @@ public class orderManager : MainManager<Order>
         };
     }
 
+    public async Task<bool> updateOrderStatus(int orderId ,OrderStatus newStatus)
+    {
+        var order = await getOne(orderId);
+        if (order == null)
+        {
+            return false;
+        }
+        order.status = newStatus;
+        order.updatedAt = DateTime.Now;
+        var updated = await Update(order);
+        if (!updated)
+            return false;
+      await  eventBus.Publish(new OrderStatusChangedEvent(order.userId, order.id, newStatus.ToString()));
+        return true;
+
+
+    }
 }

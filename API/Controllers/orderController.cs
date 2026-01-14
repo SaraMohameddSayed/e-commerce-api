@@ -124,14 +124,8 @@ namespace Controllers
         [HttpPut("{orderId}/status")]
         public async Task<IActionResult> updateOrderStatus(int orderId, [FromBody] OrderStatus newStatus)
         {
-            var order = await orderManager.getOne(orderId);
-            if (order == null)
-            {
-                return NotFound(new { message = "Order not found" });
-            }
-            order.status = newStatus;
-            order.updatedAt = DateTime.Now;
-            var result = await orderManager.Update(order);
+        
+            var result = await orderManager.updateOrderStatus(orderId, newStatus);
             if (result)
             {
                 return Ok(new { message = "Order status updated successfully" });

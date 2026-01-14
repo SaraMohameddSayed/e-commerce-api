@@ -3,12 +3,17 @@
 using Infrastructure;
 using Infrastructure.Seeders;
 using Managers;
+using Managers.EventBus;
+using Managers.Events;
+using Managers.Interfaces;
+using Managers.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
 using System.Text;
 
 
@@ -94,6 +99,10 @@ builder.Services.AddScoped<accountManager>();
 builder.Services.AddScoped<tokenManager>();
 builder.Services.AddScoped<governorateManager>();
 builder.Services.AddScoped<areaManager>();
+builder.Services.AddScoped<IEventBus, InMemoryEventBus>();
+
+builder.Services.AddScoped<IEventHandler<OrderStatusChangedEvent>,
+    OrderStatusChangedNotificationHandler>();
 
 
 var app = builder.Build();

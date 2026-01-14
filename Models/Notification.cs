@@ -25,7 +25,7 @@ namespace Models
 
         // Polymorphic reference → for deep linking with enities
         public string? EntityType { get; set; }   // Order, Product, Offer
-        public long? EntityId { get; set; }
+        public int? EntityId { get; set; }
 
         public bool IsRead { get; set; } = false;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
