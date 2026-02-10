@@ -23,6 +23,8 @@ namespace Managers.Handlers
                 UserId = @event.userId,
                 Type = NotificationType.Order,
                 SubType = NotificationSubType.OrderStatusChanged,
+                EntityType="Order",
+                EntityId = @event.orderId,
                 Title = "Order Updated",
                 Message = $"Order #{@event.orderId} status changed to {@event.newStatus}.",
                 IsRead = false,

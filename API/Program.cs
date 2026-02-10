@@ -1,12 +1,14 @@
 
 
+using API.Hubs;
 using Infrastructure;
 using Infrastructure.Seeders;
 using Managers;
+using Managers.Abstractions;
 using Managers.EventBus;
 using Managers.Events;
-using Managers.Interfaces;
 using Managers.Handlers;
+using Managers.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -60,8 +62,18 @@ builder.Services
     .UseLazyLoadingProxies();
 });
 
-builder.Services.AddCors(i => i.AddDefaultPolicy(
-    i => i.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod()));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngularDev",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200") 
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
 builder.Services
 .AddIdentity<IdentityUser,IdentityRole>()
 .AddEntityFrameworkStores<dbContext>();
@@ -99,12 +111,20 @@ builder.Services.AddScoped<accountManager>();
 builder.Services.AddScoped<tokenManager>();
 builder.Services.AddScoped<governorateManager>();
 builder.Services.AddScoped<areaManager>();
+builder.Services.AddScoped<notificationManager>();
 builder.Services.AddScoped<IEventBus, InMemoryEventBus>();
-
+//Handlers
 builder.Services.AddScoped<IEventHandler<OrderStatusChangedEvent>,
     OrderStatusChangedNotificationHandler>();
-
-
+builder.Services.AddScoped<IEventHandler<OrderStatusChangedEvent>,
+            OrderStatusChangedSignalRHandler>();
+builder.Services.AddScoped<IEventHandler<NewOrderAddedEvent>,
+            NewOrderAddedNotificationHandler>();
+builder.Services.AddScoped<IEventHandler<NewOrderAddedEvent>,
+            NewOrderAddedSignalRHandler>();
+builder.Services.AddSignalR();
+builder.Services.AddScoped<IRealtimeNotifier, SignalRNotifier>();
+//
 var app = builder.Build();
 //seeding
 using (var scope = app.Services.CreateScope())
@@ -112,11 +132,13 @@ using (var scope = app.Services.CreateScope())
     var context = scope.ServiceProvider.GetRequiredService<dbContext>();
     await GovernorateAreaSeeder.SeedAsync(context);
 }
+
 app.UseHttpsRedirection();
-app.UseCors();
+app.UseCors("AllowAngularDev");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<NotificationHub>("/hubs/notifications");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -124,13 +146,6 @@ app.UseSwagger();
 app.UseSwaggerUI();
 }
 app.UseStaticFiles();
-
-
-
-// ‘€¯·Ì «ŸÂ«— «·‹ PII
-IdentityModelEventSource.ShowPII = true;
-// ·Ê ⁄«Ì“… ﬂ„«‰ ÌŸÂ— «· Êﬂ‰ ﬂ«„·« ›Ì «··ÊÃ“
-IdentityModelEventSource.LogCompleteSecurityArtifact = true;
 
 app.Run();
 

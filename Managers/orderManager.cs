@@ -72,7 +72,8 @@ public class orderManager : MainManager<Order>
         await dbContext.Set<Order>().AddAsync(order);
         await dbContext.SaveChangesAsync();
             // حذف المنتجات من السلة بعد إنشاء الطلب
-           await cartProductManager.clearCartByUserId(addorderViewModel.userId); 
+        await cartProductManager.clearCartByUserId(addorderViewModel.userId);
+        await eventBus.Publish(new NewOrderAddedEvent(order.userId, order.id));
             return order;
         }
         catch
