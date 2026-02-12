@@ -131,6 +131,7 @@ using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<dbContext>();
     await GovernorateAreaSeeder.SeedAsync(context);
+    await AdminSeeder.SeedAsync(scope.ServiceProvider);
 }
 
 app.UseHttpsRedirection();

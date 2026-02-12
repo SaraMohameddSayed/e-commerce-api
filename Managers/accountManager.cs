@@ -35,8 +35,6 @@ namespace Managers
                     UserName=registerViewModel.userName 
                 };
                 var result = await userManager.CreateAsync(user, registerViewModel.password);
-                // Assign admin role
-                result = await userManager.AddToRoleAsync(user, "Admin");
                 var cartId= cartManager.getAll().Where(c => c.userId == user.Id).Select(c => c.id).FirstOrDefault();
                 if (cartId == 0) {
                     await createCart(user.Id);
