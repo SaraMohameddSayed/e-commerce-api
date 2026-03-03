@@ -18,7 +18,7 @@ namespace Controllers
             categoryManager=_categoryManager;
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> addCategory([FromForm] addCategoryViewModel _category)
         {

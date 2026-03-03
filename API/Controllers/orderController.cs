@@ -77,6 +77,7 @@ namespace Controllers
         }
 
         //Admin
+        [Authorize(Roles = "Admin")]
         [HttpGet("dashboard")]
         public IActionResult OrdersDashboard()
         {
@@ -120,7 +121,7 @@ namespace Controllers
             }
         }
 
-       
+        [Authorize(Roles = "Admin")]
         [HttpPut("{orderId}/status")]
         public async Task<IActionResult> updateOrderStatus(int orderId, [FromBody] OrderStatus newStatus)
         {

@@ -21,7 +21,7 @@ namespace Controllers
 
 
         //Governorate APIs
-
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public IActionResult getGovernorates()
         {
@@ -34,6 +34,8 @@ namespace Controllers
             var governorates = governorateManager.getAll().Where(g=>g.isActive==true).Include(g => g.areas).Select(g => g.ToViewModel()).ToList();
             return Ok(governorates);
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpPost("governorate")]
         public async  Task<IActionResult> addGovernorate([FromBody] addGovernorateViewModel addGovernorateViewModel)
         {
@@ -41,6 +43,7 @@ namespace Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("governorate")]
         public async Task<IActionResult> updateGovernorate( updateGovernorateViewModel updateGovernorateViewModel)
         {
@@ -63,6 +66,7 @@ namespace Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("governorateStatus/{id}")]
         public async Task<IActionResult> updateGovernorateStatus(int id)
         {
@@ -72,6 +76,7 @@ namespace Controllers
 
         //Areas APIs
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> addArea(addAreaViewModel addAreaViewModel)
         {
@@ -80,12 +85,14 @@ namespace Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("area")]
         public async Task<IActionResult> updateArea(updateAreaViewModel updateAreaViewModel)
         {
             var result = await areaManager.updateArea(updateAreaViewModel);
             return Ok(result);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPut("areaStatus/{id}")]
         public async Task<IActionResult> updateAreaStatus(int id)
         {

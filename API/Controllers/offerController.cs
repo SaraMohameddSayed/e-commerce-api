@@ -1,4 +1,5 @@
 using Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Models;
@@ -18,6 +19,7 @@ namespace Controllers
             productManager = _productManager;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> addOffer([FromForm] Offer _offer)
         {

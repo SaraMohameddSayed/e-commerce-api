@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ViewModels;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Controllers
 {
@@ -19,7 +20,7 @@ namespace Controllers
             productManager = _productManager;
             cloudinaryManager = _cloudinaryManager;
         }
-
+        [Authorize(Roles="Admin")]
         [HttpPost]
         public async Task<IActionResult> addProduct([FromForm] addProductViewModel _addProductViewModel)
         {
@@ -49,7 +50,7 @@ namespace Controllers
             return Ok(result);
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProduct(int id, [FromForm] updateProductViewModel _updateProductViewModel)
         {
@@ -73,6 +74,8 @@ namespace Controllers
                 return BadRequest(result);
             }
         }
+
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
