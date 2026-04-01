@@ -122,6 +122,14 @@ builder.Services.AddScoped<IEventHandler<NewOrderAddedEvent>,
             NewOrderAddedNotificationHandler>();
 builder.Services.AddScoped<IEventHandler<NewOrderAddedEvent>,
             NewOrderAddedSignalRHandler>();
+builder.Services.AddScoped<IEventHandler<NewProductAddedEvent>,
+            NewProductAddedNotificationHandler>();
+builder.Services.AddScoped<IEventHandler<NewProductAddedEvent>,
+            NewProductAddedSignalRHandler>();
+builder.Services.AddScoped<IEventHandler<NewOfferAddedEvent>,
+            NewOfferAddedNotificationHandler>();
+builder.Services.AddScoped<IEventHandler<NewOfferAddedEvent>,
+            NewOfferAddedSignalRHandler>();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<IRealtimeNotifier, SignalRNotifier>();
 //

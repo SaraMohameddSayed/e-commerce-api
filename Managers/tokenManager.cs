@@ -14,20 +14,28 @@ namespace Managers
     public class tokenManager
     {
         private readonly IConfiguration configuration;
-        public tokenManager(IConfiguration _configuration)
+        private readonly UserManager<IdentityUser> userManager;
+
+        public tokenManager(IConfiguration _configuration,UserManager<IdentityUser> _userManager)
         {
             configuration = _configuration;
+            userManager = _userManager; 
         }
 
-        public string generateToken(IdentityUser user)
+        public async Task<string> generateToken(IdentityUser user)
         {
             //to obtain the key and other settings from appsettings.json
             var jwtSettings = configuration.GetSection("Jwtsettings");
+            var roles = await userManager.GetRolesAsync(user);
             var claims = new List<Claim>{
                 new Claim(ClaimTypes.NameIdentifier,user.Id),
                 new Claim(ClaimTypes.Email,user.Email),
                 new Claim(ClaimTypes.Name,user.UserName)
             };
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
             //to embed key in credentials
             var tokenKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"])) ;
             Console.WriteLine("key in tokenmanager: "+jwtSettings["Key"]);

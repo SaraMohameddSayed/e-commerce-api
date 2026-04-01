@@ -14,6 +14,7 @@ namespace Controllers
     {
         public productManager productManager;
         public cloudinaryManager cloudinaryManager;
+       
 
         public productController(productManager _productManager, cloudinaryManager _cloudinaryManager)
         {
@@ -27,9 +28,10 @@ namespace Controllers
 
             var uploadImageResult = await cloudinaryManager.UploadImageAsync(_addProductViewModel.imageFile);
             _addProductViewModel.imageUrl = uploadImageResult;
-            var result = await productManager.Add(_addProductViewModel.toModel());
+            var result = await productManager.addProductAsync(_addProductViewModel);
             if (result)
             {
+
                 return Ok(result);
             }
             else

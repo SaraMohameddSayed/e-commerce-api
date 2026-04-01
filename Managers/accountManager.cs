@@ -57,7 +57,7 @@ namespace Managers
                 {
                 throw new Exception("Invalid login attempt.");
             }
-            return  tokenManager.generateToken(user);
+            return await tokenManager.generateToken(user);
 
 
         }

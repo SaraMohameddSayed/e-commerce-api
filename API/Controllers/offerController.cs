@@ -23,7 +23,7 @@ namespace Controllers
         [HttpPost]
         public async Task<IActionResult> addOffer([FromForm] Offer _offer)
         {
-            var result = await offerManager.Add(_offer);
+            var result = await offerManager.AddOfferAsync(_offer);
             if (result)
             {
                 return Ok(result);

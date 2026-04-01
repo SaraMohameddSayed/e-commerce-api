@@ -1,19 +1,26 @@
 ﻿using CloudinaryDotNet.Actions;
 using Infrastructure;
+using Managers.Interfaces;
+using Managers.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Models;
 using System;
 using System.Threading.Tasks;
 using ViewModels;
+using Microsoft.AspNetCore.Identity;
 namespace Managers;
 
 public class productManager : MainManager<Product>
 {
     public dbContext dbContext;
-    public productManager(dbContext _context) : base(_context)
+    public IEventBus eventBus;
+    public UserManager<IdentityUser> UserManager;
+    public productManager(dbContext _context,IEventBus _eventBus,UserManager<IdentityUser> _userManager) : base(_context)
     {
         dbContext=_context;
+        eventBus = _eventBus;
+        UserManager = _userManager;
     }
     public async Task<decimal> CalculateProductsTotal(IEnumerable<CartProduct> cartProducts)
     {
@@ -113,6 +120,26 @@ public async void UpdateProductQuantity(int productId, int quantityToDeduct)
         {
             throw;
         }
+    }
+
+    public async Task<bool> addProductAsync(addProductViewModel _addProductViewModel)
+    {
+      var result=  await Add(_addProductViewModel.toModel());
+        if (result)
+        {
+            var product = await dbContext.Set<Product>().FirstOrDefaultAsync(p => p.name == _addProductViewModel.name && p.price == _addProductViewModel.price);
+            
+            var adminUsers = await UserManager.GetUsersInRoleAsync("Admin");
+            var adminIds = adminUsers.Select(u => u.Id).ToHashSet();
+            var userIds = await dbContext.Set<IdentityUser>()
+          .Where(u => !adminIds.Contains(u.Id))
+          .Select(u => u.Id)
+          .ToListAsync();
+
+            await eventBus.Publish(new NewProductAddedEvent(userIds,product.id));
+            
+        }
+        return result;
     }
     public async Task<bool> softDeleteProduct(int productId)
     {
