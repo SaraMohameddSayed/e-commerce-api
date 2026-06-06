@@ -1,9 +1,9 @@
-﻿using Managers;
+﻿using Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Models;
+using Domain;
 using System.Security.Claims;
-using ViewModels;
+using DTOs;
 
 namespace Controllers
 {
@@ -11,8 +11,8 @@ namespace Controllers
     [ApiController]
     public class messageController : BaseController
     {
-        public messageManager messageManager;
-        public messageController(messageManager _messageManager)
+        public MessageService messageManager;
+        public messageController(MessageService _messageManager)
         {
             messageManager = _messageManager;
         }

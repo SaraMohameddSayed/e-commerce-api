@@ -1,15 +1,15 @@
 using Humanizer;
 using Infrastructure;
-using Managers;
+using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models;
-using Models.Enums;
+using Domain;
+using Domain.Enums;
 using System.Security.Claims;
-using ViewModels;
+using DTOs;
 
 namespace Controllers
 {
@@ -18,12 +18,12 @@ namespace Controllers
     [ApiController]
     public class orderController : BaseController
     {
-        public orderManager orderManager;
-        public productManager productManager;
+        public OrderService orderManager;
+        public ProductService productManager;
         public orderProductManager orderProductManager;
         public cartProductManager cartProductManager;
         public UserManager<IdentityUser> userManager;
-        public orderController(orderManager _orderManager, productManager _productManager, orderProductManager _orderProductManager, cartProductManager _cartProductManager,UserManager<IdentityUser> _userManager)
+        public orderController(OrderService _orderManager, ProductService _productManager, orderProductManager _orderProductManager, cartProductManager _cartProductManager,UserManager<IdentityUser> _userManager)
         {
             orderManager = _orderManager;
             productManager = _productManager;

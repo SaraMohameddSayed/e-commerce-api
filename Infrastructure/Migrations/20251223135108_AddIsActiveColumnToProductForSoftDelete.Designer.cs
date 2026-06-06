@@ -234,7 +234,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Models.Area", b =>
+            modelBuilder.Entity("Domain.Area", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -256,7 +256,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Area");
                 });
 
-            modelBuilder.Entity("Models.Cart", b =>
+            modelBuilder.Entity("Domain.Cart", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -275,7 +275,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Cart");
                 });
 
-            modelBuilder.Entity("Models.CartProduct", b =>
+            modelBuilder.Entity("Domain.CartProduct", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -301,7 +301,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("CartProduct");
                 });
 
-            modelBuilder.Entity("Models.Category", b =>
+            modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -336,7 +336,7 @@ namespace Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Models.Governorate", b =>
+            modelBuilder.Entity("Domain.Governorate", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -356,7 +356,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Governorate");
                 });
 
-            modelBuilder.Entity("Models.Message", b =>
+            modelBuilder.Entity("Domain.Message", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -381,7 +381,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Message");
                 });
 
-            modelBuilder.Entity("Models.Offer", b =>
+            modelBuilder.Entity("Domain.Offer", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -415,7 +415,7 @@ namespace Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Domain.Order", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -483,7 +483,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Order");
                 });
 
-            modelBuilder.Entity("Models.OrderProduct", b =>
+            modelBuilder.Entity("Domain.OrderProduct", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -520,7 +520,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("OrderProduct");
                 });
 
-            modelBuilder.Entity("Models.Product", b =>
+            modelBuilder.Entity("Domain.Product", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -892,7 +892,7 @@ namespace Infrastructure.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Models.ProductOffer", b =>
+            modelBuilder.Entity("Domain.ProductOffer", b =>
                 {
                     b.Property<int>("id")
                         .ValueGeneratedOnAdd()
@@ -990,9 +990,9 @@ namespace Infrastructure.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Models.Area", b =>
+            modelBuilder.Entity("Domain.Area", b =>
                 {
-                    b.HasOne("Models.Governorate", "governorate")
+                    b.HasOne("Domain.Governorate", "governorate")
                         .WithMany("areas")
                         .HasForeignKey("governorateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1001,7 +1001,7 @@ namespace Infrastructure.Migrations
                     b.Navigation("governorate");
                 });
 
-            modelBuilder.Entity("Models.Cart", b =>
+            modelBuilder.Entity("Domain.Cart", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "user")
                         .WithMany()
@@ -1012,15 +1012,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("Models.CartProduct", b =>
+            modelBuilder.Entity("Domain.CartProduct", b =>
                 {
-                    b.HasOne("Models.Cart", "cart")
+                    b.HasOne("Domain.Cart", "cart")
                         .WithMany("products")
                         .HasForeignKey("cartId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.Product", "product")
+                    b.HasOne("Domain.Product", "product")
                         .WithMany("carts")
                         .HasForeignKey("productId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1031,15 +1031,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("product");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Domain.Order", b =>
                 {
-                    b.HasOne("Models.Area", "area")
+                    b.HasOne("Domain.Area", "area")
                         .WithMany()
                         .HasForeignKey("areaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.Governorate", "governorate")
+                    b.HasOne("Domain.Governorate", "governorate")
                         .WithMany()
                         .HasForeignKey("governorateId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1058,15 +1058,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("user");
                 });
 
-            modelBuilder.Entity("Models.OrderProduct", b =>
+            modelBuilder.Entity("Domain.OrderProduct", b =>
                 {
-                    b.HasOne("Models.Order", "order")
+                    b.HasOne("Domain.Order", "order")
                         .WithMany("products")
                         .HasForeignKey("orderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.Product", "product")
+                    b.HasOne("Domain.Product", "product")
                         .WithMany("orders")
                         .HasForeignKey("productId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1077,9 +1077,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("product");
                 });
 
-            modelBuilder.Entity("Models.Product", b =>
+            modelBuilder.Entity("Domain.Product", b =>
                 {
-                    b.HasOne("Models.Category", "category")
+                    b.HasOne("Domain.Category", "category")
                         .WithMany("products")
                         .HasForeignKey("categoryId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1088,15 +1088,15 @@ namespace Infrastructure.Migrations
                     b.Navigation("category");
                 });
 
-            modelBuilder.Entity("Models.ProductOffer", b =>
+            modelBuilder.Entity("Domain.ProductOffer", b =>
                 {
-                    b.HasOne("Models.Offer", "offer")
+                    b.HasOne("Domain.Offer", "offer")
                         .WithMany("products")
                         .HasForeignKey("offerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Models.Product", "product")
+                    b.HasOne("Domain.Product", "product")
                         .WithMany("offers")
                         .HasForeignKey("productId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -1107,32 +1107,32 @@ namespace Infrastructure.Migrations
                     b.Navigation("product");
                 });
 
-            modelBuilder.Entity("Models.Cart", b =>
+            modelBuilder.Entity("Domain.Cart", b =>
                 {
                     b.Navigation("products");
                 });
 
-            modelBuilder.Entity("Models.Category", b =>
+            modelBuilder.Entity("Domain.Category", b =>
                 {
                     b.Navigation("products");
                 });
 
-            modelBuilder.Entity("Models.Governorate", b =>
+            modelBuilder.Entity("Domain.Governorate", b =>
                 {
                     b.Navigation("areas");
                 });
 
-            modelBuilder.Entity("Models.Offer", b =>
+            modelBuilder.Entity("Domain.Offer", b =>
                 {
                     b.Navigation("products");
                 });
 
-            modelBuilder.Entity("Models.Order", b =>
+            modelBuilder.Entity("Domain.Order", b =>
                 {
                     b.Navigation("products");
                 });
 
-            modelBuilder.Entity("Models.Product", b =>
+            modelBuilder.Entity("Domain.Product", b =>
                 {
                     b.Navigation("carts");
 

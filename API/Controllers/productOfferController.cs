@@ -1,8 +1,8 @@
-﻿using Managers;
+﻿using Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ViewModels;
+using DTOs;
 
 namespace Controllers
 {
@@ -12,10 +12,10 @@ namespace Controllers
     {
 
         public productOfferManager productOfferManager;
-        public offerManager offerManager;
-        public productManager productManager;
+        public OfferService offerManager;
+        public ProductService productManager;
 
-        public productOfferController(productOfferManager _productOffersManager, productManager _productManager, offerManager _offerManager)
+        public productOfferController(productOfferManager _productOffersManager, ProductService _productManager, OfferService _offerManager)
         {
             productOfferManager = _productOffersManager;
             productManager = _productManager;

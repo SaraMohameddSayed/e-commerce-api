@@ -1,28 +1,27 @@
-﻿using ViewModels;
-using Managers;
-using Microsoft.AspNetCore.Http;
+﻿
+using DTOs;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-
+using Services;
 namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class accountController : BaseController
+    public class AccountController : BaseController
     {
-        public accountManager accountManager;
-        public accountController(accountManager _accountManager)
+        public AccountService _accountManager;
+        public AccountController(AccountService accountManager)
         {
-            accountManager = _accountManager;
+            _accountManager = accountManager;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> register([FromForm] registerViewModel registerViewModel)
+        public async Task<IActionResult> Register([FromForm] RegisterRequest registerViewModel)
         {
             try
             {
                 var userId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var result = await accountManager.register(registerViewModel);
+                var result = await _accountManager.Register(registerViewModel);
                 if (result.Succeeded)
                 {
                     return Ok(result);
@@ -38,11 +37,11 @@ namespace Controllers
             }
         }
         [HttpPost("login")]
-        public async Task<IActionResult> login([FromForm] loginViewModel loginViewModel)
+        public async Task<IActionResult> Login([FromForm] LoginRequest loginViewModel)
         {
             try
             {
-                var result = await accountManager.login(loginViewModel);
+                var result = await _accountManager.Login(loginViewModel);
                 return Ok(new { token= result });
             }
             catch
@@ -52,11 +51,11 @@ namespace Controllers
         }
 
         [HttpPost("logout")]
-        public IActionResult logout()
+        public IActionResult Logout()
         {
             try
             {
-                accountManager.logout();
+                _accountManager.Logout();
                 return Ok();
             }
             catch

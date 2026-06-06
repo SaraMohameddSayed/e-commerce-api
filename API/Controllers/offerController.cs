@@ -1,9 +1,9 @@
-using Managers;
+using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Models;
-using ViewModels;
+using Domain;
+using DTOs;
 
 namespace Controllers
 {
@@ -11,9 +11,9 @@ namespace Controllers
     [ApiController]
     public class offerController : BaseController
     {
-        public offerManager offerManager;
-        public productManager productManager;
-        public offerController(offerManager _offerManager,productManager _productManager)
+        public OfferService offerManager;
+        public ProductService productManager;
+        public offerController(OfferService _offerManager,ProductService _productManager)
         {
             offerManager = _offerManager;
             productManager = _productManager;

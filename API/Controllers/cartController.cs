@@ -1,13 +1,13 @@
-using Managers;
+using Services;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Models;
+using Domain;
 using System.Security.Claims;
-using ViewModels;
+using DTOs;
 
 namespace Controllers
 {
@@ -17,39 +17,39 @@ namespace Controllers
 
     public class cartController : BaseController
     {
-        public cartManager cartManager;
-        public cartProductManager cartProductManager;
-        public productManager productManager;
-        public UserManager<IdentityUser> userManager;
-        public productOfferManager productOfferManager;
+        public CartManager _cartManager;
+        public CartProductManager _cartProductManager;
+        public ProductManager _productManager;
+        public UserManager<IdentityUser> _userManager;
+        public ProductOfferManager _productOfferManager;
 
-        public cartController(cartManager _cartManager, productManager _productManager, cartProductManager _cartProductManager,UserManager<IdentityUser> _userManager,productOfferManager _productOfferManager)
+        public cartController(CartService cartManager, ProductService productManager, cartProductManager cartProductManager,UserManager<IdentityUser> userManager,productOfferManager productOfferManager)
         {
-            cartManager = _cartManager;
-            productManager = _productManager;
-            cartProductManager = _cartProductManager;
-            userManager = _userManager; 
-            productOfferManager = _productOfferManager;
+            _cartManager = cartManager;
+            _productManager = productManager;
+            _cartProductManager = cartProductManager;
+            _userManager = userManager; 
+            _productOfferManager = productOfferManager;
         }
          [HttpPost]
-        public async Task<IActionResult> addToCart(addToCartViewModel addToCart)
+        public async Task<IActionResult> addToCart(AddToCartRequest addToCart)
         {
            
             try
             {
                 var userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var cartId = await cartManager.getAll().Where(c => c.userId == userId)
+                var cartId = await _cartManager.GetAll().Where(c => c.userId == userId)
                     .Select(c => c.id)
                     .FirstOrDefaultAsync();
                 if (cartId == 0)
                 {
 
-                    await cartManager.Add(new Cart { userId = userId });
-                    var newCart = await cartManager.getAll().Where(c => c.userId == userId).FirstOrDefaultAsync();
+                    await _cartManager.Add(new Cart { userId = userId });
+                    var newCart = await _cartManager.GetAll().Where(c => c.userId == userId).FirstOrDefaultAsync();
                     cartId =newCart.id;
                 }
 
-                var result = await cartProductManager.Add(addToCart.toModel(cartId));
+                var result = await _cartProductManager.Add(addToCart.toModel(cartId));
                 return Ok(result);
             }
             catch
@@ -63,12 +63,12 @@ namespace Controllers
             try
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var cartId = await cartManager.getAll().Where(c => c.userId == userId)
+                var cartId = await _cartManager.GetAll().Where(c => c.userId == userId)
                     .Select(c => c.id)
                     .FirstOrDefaultAsync();
                
 
-                var cartProducts = await cartProductManager.getAll()
+                var cartProducts = await _cartProductManager.GetAll()
                     .Where(cp => cp.cartId == cartId)
                     .Include(cp => cp.product)
                     .ThenInclude(p => p.offers)
@@ -87,12 +87,12 @@ namespace Controllers
             try
             {
                 var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                var cartId = await cartManager.getAll().Where(c => c.userId == userId)
+                var cartId = await _cartManager.GetAll().Where(c => c.userId == userId)
                     .Select(c => c.id)
                     .FirstOrDefaultAsync();
-                var cartProduct = await cartProductManager.getAll()
+                var cartProduct = await _cartProductManager.GetAll()
                     .FirstOrDefaultAsync(cp => cp.id == cartProductId && cp.cartId==cartId);
-                var result = await cartProductManager.Delete(cartProduct);
+                var result = await _cartProductManager.Delete(cartProduct);
                 return Ok(result);
             }
             catch
@@ -104,10 +104,10 @@ namespace Controllers
         public async Task<IActionResult> updateCart(List<CartProduct> updatedcartProducts)
         {
             var userId= User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var cartId = await cartManager.getAll().Where(c => c.userId == userId)
+            var cartId = await _cartManager.GetAll().Where(c => c.userId == userId)
                 .Select(c => c.id)
                 .FirstOrDefaultAsync();
-            var cartproducts = await cartProductManager.getAll()
+            var cartproducts = await _cartProductManager.GetAll()
                 .Where(cp => cp.cartId == cartId)
                 .ToListAsync();
             foreach (var updatedProduct in updatedcartProducts)
@@ -116,7 +116,7 @@ namespace Controllers
                 if (existingProduct != null)
                 {
                     existingProduct.quantity = updatedProduct.quantity;
-                    await cartProductManager.Update(existingProduct);
+                    await _cartProductManager.Update(existingProduct);
                 }
             }
                 return Ok();

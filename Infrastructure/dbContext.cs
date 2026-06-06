@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
-using Models;
+using Domain;
 namespace Infrastructure;
 
 public class dbContext : IdentityDbContext<IdentityUser>

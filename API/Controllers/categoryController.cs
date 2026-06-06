@@ -1,28 +1,28 @@
-using Managers;
+using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using Models;
-using ViewModels;
+using Domain;
+using DTOs;
 
 namespace Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class categoryController : BaseController
+    public class CategoryController : BaseController
     {
-        public categoryManager categoryManager;
-        public categoryController(categoryManager _categoryManager)
+        public CategoryManager _categoryManager;
+        public CategoryController(CategoryManager categoryManager)
         {
-            categoryManager=_categoryManager;
+            _categoryManager = categoryManager;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> addCategory([FromForm] addCategoryViewModel _category)
+        public async Task<IActionResult> addCategory([FromForm] AddCategoryRequest _category)
         {
-            var result = await categoryManager.Add(_category.toCategoryModel());
+            var result = await _categoryManager.Add(_category.toCategoryModel());
             if (result)
             {
                 return Ok(result);
@@ -39,7 +39,7 @@ namespace Controllers
         public IActionResult getAllCategories()
         {
 
-            var result =  categoryManager.getAll().Select(c=>c.toViewModel()).ToList();
+            var result =  _categoryManager.GetAll().Select(c=>c.toViewModel()).ToList();
             if (result!=null)
             {
                 return Ok(result);

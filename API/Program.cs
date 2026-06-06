@@ -3,18 +3,18 @@
 using API.Hubs;
 using Infrastructure;
 using Infrastructure.Seeders;
-using Managers;
-using Managers.Abstractions;
-using Managers.EventBus;
-using Managers.Events;
-using Managers.Handlers;
-using Managers.Interfaces;
+using Services;
+using Services.Abstractions;
+using Services.EventBus;
+using Services.Events;
+using Services.Handlers;
+using Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi.Domain;
 using System;
 using System.Text;
 
@@ -97,21 +97,21 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddScoped<cartManager>();
+builder.Services.AddScoped<CartService>();
 builder.Services.AddScoped<cartProductManager>();
-builder.Services.AddScoped<categoryManager>();
-builder.Services.AddScoped<offerManager>();
-builder.Services.AddScoped<orderManager>();
+builder.Services.AddScoped<CategoryService>();
+builder.Services.AddScoped<OfferService>();
+builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<orderProductManager>();
-builder.Services.AddScoped<productManager>();
+builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<productOfferManager>();
-builder.Services.AddScoped<messageManager>();
-builder.Services.AddScoped<cloudinaryManager>();
-builder.Services.AddScoped<accountManager>();
-builder.Services.AddScoped<tokenManager>();
-builder.Services.AddScoped<governorateManager>();
-builder.Services.AddScoped<areaManager>();
-builder.Services.AddScoped<notificationManager>();
+builder.Services.AddScoped<MessageService>();
+builder.Services.AddScoped<CloudinaryService>();
+builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<GovernorateService>();
+builder.Services.AddScoped<AreaService>();
+builder.Services.AddScoped<NotificationService>();
 builder.Services.AddScoped<IEventBus, InMemoryEventBus>();
 //Handlers
 builder.Services.AddScoped<IEventHandler<OrderStatusChangedEvent>,

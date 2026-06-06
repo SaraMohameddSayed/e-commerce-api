@@ -1,5 +1,5 @@
 ﻿using Controllers;
-using Managers;
+using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,8 +11,8 @@ namespace API.Controllers
     [Authorize]
     public class NotificationsController : BaseController
     {
-      public notificationManager notificationManager;
-        public NotificationsController(notificationManager _notificationManager)
+      public NotificationService notificationManager;
+        public NotificationsController(NotificationService _notificationManager)
         {
             notificationManager = _notificationManager;
         }

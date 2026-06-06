@@ -1,8 +1,10 @@
-﻿using Managers;
+﻿using Application.Features.Delivery.Area.DTOs;
+using Application.Features.Delivery.Governorate.DTOs;
+using Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ViewModels;
+using DTOs;
 
 namespace Controllers
 {
@@ -11,9 +13,9 @@ namespace Controllers
     [Authorize]
     public class deliveryController : BaseController
     {
-        public governorateManager governorateManager;
-        public areaManager areaManager;
-        public deliveryController(governorateManager _governorateManager,areaManager _areaManager)
+        public GovernorateService governorateManager;
+        public AreaService areaManager;
+        public deliveryController(GovernorateService _governorateManager,AreaService _areaManager)
         {
             governorateManager = _governorateManager;
             areaManager = _areaManager;

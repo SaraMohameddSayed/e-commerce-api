@@ -1,10 +1,11 @@
-using Managers;
-using Models;
+using Infrastructure;
+using Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using ViewModels;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
+using Domain;
+using DTOs;
 
 namespace Controllers
 {
@@ -12,11 +13,11 @@ namespace Controllers
     [ApiController]
     public class productController : BaseController
     {
-        public productManager productManager;
-        public cloudinaryManager cloudinaryManager;
+        public ProductService productManager;
+        public CloudinaryService cloudinaryManager;
        
 
-        public productController(productManager _productManager, cloudinaryManager _cloudinaryManager)
+        public productController(ProductService _productManager, CloudinaryService _cloudinaryManager)
         {
             productManager = _productManager;
             cloudinaryManager = _cloudinaryManager;
@@ -76,7 +77,30 @@ namespace Controllers
                 return BadRequest(result);
             }
         }
+        [HttpPatch("{id}/stock")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> UpdateStock(int id, [FromBody]int newStock)
+        {
+            var product = await productManager.getOne(id);
+            if (product == null) return NotFound();
 
+            product.quantity = newStock;
+            await productManager.Update(product);
+
+            return Ok(new { message = "Stock updated successfully" });
+        }
+        [HttpPatch("{id}/toggle-active")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> ToggleActive(int id)
+        {
+            var product = await productManager.getOne(id);
+            if (product == null) return NotFound();
+
+            product.isActive = !product.isActive;
+            await productManager.Update(product);
+
+            return Ok(new { message = "Status updated" });
+        }
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
