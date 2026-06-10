@@ -1,4 +1,4 @@
-# 🛒 El-Beqala — E-Commerce Management System API
+# E-Commerce Management System API
 
 [![Build](https://img.shields.io/badge/build-passing-brightgreen)](#)
 [![.NET](https://img.shields.io/badge/.NET-9.0-512BD4?logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
