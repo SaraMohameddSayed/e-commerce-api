@@ -1,35 +1,31 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 namespace Domain;
 
  public class Offer
     {
 
-        public int id { get; set; }
+        public int Id { get; set; }
 
-        public string name { get; set; }
+        public string Name { get; set; }
 
-        public int discount { get; set; }
+        public int Discount { get; set; }
+    public DateTime? StartDate { get; set; }
 
-    public DateTime? startDate { get; set; }
-
-    public DateTime? endDate { get; set; } 
-        public virtual List<ProductOffer>? products { get; set; }
-
+    public DateTime? EndDate { get; set; } 
+        public virtual List<ProductOffer>? Products { get; set; }
 
 }
-public class offerConfiguration:IEntityTypeConfiguration<Offer>
+public class OfferConfiguration:IEntityTypeConfiguration<Offer>
     {
         public void Configure(EntityTypeBuilder<Offer> builder)
         {            
-            builder.HasKey(c => c.id);
-
-            builder.Property(o => o.discount)
+            builder.HasKey(c => c.Id);
+            builder.Property(o => o.Discount)
             .IsRequired();
-            //builder.Property(o => o.startDate)
+            //builder.Property(o => o.StartDate)
             //.IsRequired();
-            //builder.Property(o => o.endDate)
+            //builder.Property(o => o.EndDate)
             //.IsRequired();
             
         }

@@ -3,10 +3,10 @@ using System;
 using Domain;
 using Infrastructure;
 
-namespace Services;
- public class CategoryService : MainService<Category>
+namespace Application.Services;
+public class CategoryService : MainService<Category>
     {
-        public CategoryService(dbContext _context) : base(_context)
+        public CategoryService(AppDbContext AppDbContext) : base(AppDbContext)
         {
 
         }

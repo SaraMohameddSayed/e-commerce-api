@@ -7,31 +7,31 @@ using System.Threading.Tasks;
 
 namespace DTOs
 {
-    public static class cartProductExtensions
+    public static class CartProductExtensions
     {
-        public static CartProduct toModel(this AddToCartRequest _addToCartViewModel,int cartId)
+        public static CartProduct ToCartProduct(this AddToCartRequest addToCartrequest,int cartId)
         {
             return new CartProduct
             {
-                cartId = cartId,
-                productId = _addToCartViewModel.productId,
-                quantity = _addToCartViewModel.quantity
+                CartId = cartId,
+                ProductId = addToCartrequest.ProductId,
+                Quantity = addToCartrequest.Quantity
             };
         }
-        public static CartProductResponse toCartProductViewModel(this CartProduct cartProduct)
+        public static CartProductResponse ToResponse(this CartProduct cartProduct)
         {
             return new CartProductResponse
             {
-                id = cartProduct.id,
-                productId = cartProduct.productId,
-                imageUrl = cartProduct.product.imageUrl,
-                quantity = cartProduct.quantity,
-                productName = cartProduct.product.name,
-                productPrice = cartProduct.product.price,
-                discountedPrice = cartProduct.product?.offers?
-                             .OrderByDescending(o => o.applicationDate)?
-                             .Select(o => (cartProduct.product.price - o.discountValue))?
-                             .FirstOrDefault()?? cartProduct.product.price
+                Id = cartProduct.Id,
+                ProductId = cartProduct.ProductId,
+                ImageUrl = cartProduct.Product.ImageUrl,
+                Quantity = cartProduct.Quantity,
+                ProductName = cartProduct.Product.Name,
+                ProductPrice = cartProduct.Product.Price,
+                DiscountedPrice = cartProduct.Product?.Offers?
+                             .OrderByDescending(o => o.ApplicationDate)?
+                             .Select(o => (cartProduct.Product.Price - o.DiscountValue))?
+                             .FirstOrDefault()?? cartProduct.Product.Price
             };
                     
         }

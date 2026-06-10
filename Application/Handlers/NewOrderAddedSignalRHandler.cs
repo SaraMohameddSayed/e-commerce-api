@@ -1,14 +1,9 @@
-﻿using Services.Abstractions;
-using Services.Events;
-using Services.Interfaces;
-using Shared.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Application.Shared.Contracts;
+using Application.Abstractions;
+using Application.Events;
 
-namespace Services.Handlers
+
+namespace Application.Handlers
 {
     public class NewOrderAddedSignalRHandler:IEventHandler<NewOrderAddedEvent>
     {

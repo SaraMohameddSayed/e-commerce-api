@@ -7,21 +7,22 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Application.Services
 {
     public class CartProductService:MainService<CartProduct>
     {
-        public CartProductService(dbContext _dbContext) : base(_dbContext)
+        private readonly AppDbContext _AppDbContext;
+        public CartProductService(AppDbContext  AppDbContext ) : base(AppDbContext )
         {
-
+            _AppDbContext = AppDbContext;
         }
         public async Task<bool> ClearCartByUserId(string userId)
         {
-            var cartProducts = GetAll().Where(cp => cp.cart.userId == userId);
+            var cartProducts = GetAll().Where(cp => cp.Cart.UserId == userId);
             try
             {
-                dbContext.Set<CartProduct>().RemoveRange(cartProducts);
-                await dbContext.SaveChangesAsync();
+                _AppDbContext .Set<CartProduct>().RemoveRange(cartProducts);
+                await _AppDbContext .SaveChangesAsync();
                 return true;
             }
             catch

@@ -1,4 +1,4 @@
-using Services;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -12,17 +12,17 @@ namespace Controllers
     [Route("api/[controller]")]
     public class CategoryController : BaseController
     {
-        public CategoryManager _categoryManager;
-        public CategoryController(CategoryManager categoryManager)
+        public CategoryService _categoryService;
+        public CategoryController(CategoryService categoryService)
         {
-            _categoryManager = categoryManager;
+            _categoryService = categoryService;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> addCategory([FromForm] AddCategoryRequest _category)
         {
-            var result = await _categoryManager.Add(_category.toCategoryModel());
+            var result = await _categoryService.Add(_category.ToCategory());
             if (result)
             {
                 return Ok(result);
@@ -39,7 +39,7 @@ namespace Controllers
         public IActionResult getAllCategories()
         {
 
-            var result =  _categoryManager.GetAll().Select(c=>c.toViewModel()).ToList();
+            var result =  _categoryService.GetAll().Select(c=>c.ToResponse()).ToList();
             if (result!=null)
             {
                 return Ok(result);

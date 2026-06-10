@@ -1,15 +1,11 @@
-﻿using Services.Events;
-using Services.Interfaces;
+﻿using Application.Events;
+using Application.Services;
 using Domain;
 using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
+using Application.Abstractions;
 
-namespace Services.Handlers
+
+namespace Application.Handlers
 {
     public class NewOrderAddedNotificationHandler:IEventHandler<NewOrderAddedEvent>
     {

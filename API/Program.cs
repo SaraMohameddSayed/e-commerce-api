@@ -1,22 +1,17 @@
-
-
 using API.Hubs;
 using Infrastructure;
 using Infrastructure.Seeders;
-using Services;
-using Services.Abstractions;
-using Services.EventBus;
-using Services.Events;
-using Services.Handlers;
-using Services.Interfaces;
+using Application.Services;
+using Application.Abstractions;
+using Application.EventBus;
+using Application.Events;
+using Application.Handlers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Domain;
-using System;
 using System.Text;
+using Microsoft.OpenApi.Models;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,7 +51,7 @@ builder.Services.AddControllers();
 //    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
 //});
 builder.Services
-.AddDbContext<dbContext>(options=>{
+.AddDbContext <AppDbContext>(options=>{
     options
     .UseSqlServer(builder.Configuration.GetConnectionString("TheConnection"))
     .UseLazyLoadingProxies();
@@ -76,7 +71,7 @@ builder.Services.AddCors(options =>
 
 builder.Services
 .AddIdentity<IdentityUser,IdentityRole>()
-.AddEntityFrameworkStores<dbContext>();
+.AddEntityFrameworkStores<AppDbContext >();
 
 builder.Services.AddAuthentication(options =>
 {
@@ -98,16 +93,16 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<CartService>();
-builder.Services.AddScoped<cartProductManager>();
+builder.Services.AddScoped<CartProductService>();
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<OfferService>();
 builder.Services.AddScoped<OrderService>();
-builder.Services.AddScoped<orderProductManager>();
+builder.Services.AddScoped<OrderProductService>();
 builder.Services.AddScoped<ProductService>();
-builder.Services.AddScoped<productOfferManager>();
+builder.Services.AddScoped<ProductOfferService>();
 builder.Services.AddScoped<MessageService>();
 builder.Services.AddScoped<CloudinaryService>();
-builder.Services.AddScoped<AccountService>();
+builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<TokenService>();
 builder.Services.AddScoped<GovernorateService>();
 builder.Services.AddScoped<AreaService>();
@@ -137,7 +132,7 @@ var app = builder.Build();
 //seeding
 using (var scope = app.Services.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<dbContext>();
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext >();
     await GovernorateAreaSeeder.SeedAsync(context);
     await AdminSeeder.SeedAsync(scope.ServiceProvider);
 }

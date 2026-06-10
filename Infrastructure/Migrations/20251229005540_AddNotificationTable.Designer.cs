@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Infrastructure.Migrations
 {
-    [DbContext(typeof(dbContext))]
+    [DbContext(typeof(DbContext))]
     [Migration("20251229005540_AddNotificationTable")]
     partial class AddNotificationTable
     {

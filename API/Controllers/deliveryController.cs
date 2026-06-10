@@ -1,6 +1,4 @@
-﻿using Application.Features.Delivery.Area.DTOs;
-using Application.Features.Delivery.Governorate.DTOs;
-using Services;
+﻿using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,12 +11,12 @@ namespace Controllers
     [Authorize]
     public class deliveryController : BaseController
     {
-        public GovernorateService governorateManager;
-        public AreaService areaManager;
-        public deliveryController(GovernorateService _governorateManager,AreaService _areaManager)
+        public GovernorateService _governorateService;
+        public AreaService _areaService;
+        public deliveryController(GovernorateService governorateService, AreaService areaService)
         {
-            governorateManager = _governorateManager;
-            areaManager = _areaManager;
+            _governorateService = governorateService;
+            _areaService = areaService;
         }
 
 
@@ -27,31 +25,31 @@ namespace Controllers
         [HttpGet]
         public IActionResult getGovernorates()
         {
-            var governorates = governorateManager.getAll().Include(g => g.areas).Select(g => g.ToViewModel()).ToList();
+            var governorates = _governorateService.GetAll().Include(g => g.Areas).Select(g => g.ToResponse()).ToList();
             return Ok(governorates);
         }
         [HttpGet("governorates/active")]
         public IActionResult getActiveGovernorates()
         {
-            var governorates = governorateManager.getAll().Where(g=>g.isActive==true).Include(g => g.areas).Select(g => g.ToViewModel()).ToList();
+            var governorates = _governorateService.GetAll().Where(g => g.IsActive == true).Include(g => g.Areas).Select(g => g.ToResponse()).ToList();
             return Ok(governorates);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost("governorate")]
-        public async  Task<IActionResult> addGovernorate([FromBody] addGovernorateViewModel addGovernorateViewModel)
+        public async  Task<IActionResult> addGovernorate([FromBody] AddGovernorateRequest addGovernorateRequest)
         {
-            var result = await governorateManager.Add(addGovernorateViewModel.toModel());
+            var result = await _governorateService.Add(addGovernorateRequest.ToGovernorate());
             return Ok(result);
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPut("governorate")]
-        public async Task<IActionResult> updateGovernorate( updateGovernorateViewModel updateGovernorateViewModel)
+        public async Task<IActionResult> updateGovernorate( UpdateGovernorateRequest updateGovernorateRequest)
         {
 
 
-            var result = await governorateManager.updateGovernorate(updateGovernorateViewModel);
+            var result = await _governorateService.UpdateGovernorate(updateGovernorateRequest);
             if (!result)
             {
                 return BadRequest();
@@ -72,7 +70,7 @@ namespace Controllers
         [HttpPut("governorateStatus/{id}")]
         public async Task<IActionResult> updateGovernorateStatus(int id)
         {
-            var result = await governorateManager.updateGovernorateStatus(id);
+            var result = await _governorateService.UpdateGovernorateStatus(id);
             return Ok(result);
         }
 
@@ -80,25 +78,25 @@ namespace Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> addArea(addAreaViewModel addAreaViewModel)
+        public async Task<IActionResult> addArea(AddAreaRequest addAreaRequest)
         {
-            var ressult = await areaManager.Add(addAreaViewModel.toModel());
+            var ressult = await _areaService.Add(addAreaRequest.ToArea());
             return Ok(ressult);
 
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPut("area")]
-        public async Task<IActionResult> updateArea(updateAreaViewModel updateAreaViewModel)
+        public async Task<IActionResult> updateArea(UpdateAreaRequest updateAreaRequest)
         {
-            var result = await areaManager.updateArea(updateAreaViewModel);
+            var result = await _areaService.UpdateArea(updateAreaRequest);
             return Ok(result);
         }
         [Authorize(Roles = "Admin")]
         [HttpPut("areaStatus/{id}")]
         public async Task<IActionResult> updateAreaStatus(int id)
         {
-            var result = await areaManager.updateAreaStatus(id);
+            var result = await _areaService.UpdateAreaStatus(id);
             return Ok(result);
         }
     }

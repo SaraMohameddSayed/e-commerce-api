@@ -8,13 +8,13 @@ namespace DTOs
 {
     public class CartProductResponse
     {
-        public int id { get; set; }
-        public int productId { get; set; }
-        public string imageUrl { get; set; }
-        public int quantity { get; set; }
-        public string productName { get; set; }
-        public decimal productPrice { get; set; }
-        public decimal? discountedPrice { get; set; }
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+        public string ImageUrl { get; set; }
+        public int Quantity { get; set; }
+        public string ProductName { get; set; }
+        public decimal ProductPrice { get; set; }
+        public decimal? DiscountedPrice { get; set; }
 
     }
 }

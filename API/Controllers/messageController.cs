@@ -1,4 +1,4 @@
-﻿using Services;
+﻿using Application.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Domain;
@@ -9,30 +9,30 @@ namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class messageController : BaseController
+    public class MessageController : BaseController
     {
-        public MessageService messageManager;
-        public messageController(MessageService _messageManager)
+        public MessageService _messageService;
+        public MessageController(MessageService messageService)
         {
-            messageManager = _messageManager;
+            _messageService = messageService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> addMessage([FromForm] Message _message)
+        public async Task<IActionResult> submitMessage([FromForm] Message _message)
         {
             var userId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            _message.userId = userId;
+            _message.UserId = userId;
 
             if (userId == null)
             {
-                _message.userId = null;
+                _message.UserId = null;
                
-               return Ok( await messageManager.Add(_message));
+               return Ok( await _messageService.Add(_message));
             }
             var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
             //معنى كدا ان اليوزر مسجل دخول
-            _message.email = userEmail;
-            var result =  await messageManager.Add(_message);
+            _message.Email = userEmail;
+            var result =  await _messageService.Add(_message);
 
             if (result)
             {
@@ -50,7 +50,7 @@ namespace Controllers
         public IActionResult getAllmessages()
         {
 
-            var result = messageManager.getAll().ToList();
+            var result = _messageService.GetAll().ToList();
             if (result != null)
             {
                 return Ok(result);

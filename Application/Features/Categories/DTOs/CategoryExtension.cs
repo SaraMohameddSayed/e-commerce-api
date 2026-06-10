@@ -9,19 +9,19 @@ namespace DTOs;
 
     public static class CategoryExtensions
     {
-        public static Category toCategoryModel(this AddCategoryRequest model)
+        public static Category ToCategory(this AddCategoryRequest AddCategoryRequest)
         {
            return new Category
            {
-               name=model.name
+               Name=AddCategoryRequest.Name
            };
         }
-    public static CategoryResponse toViewModel(this Category model)
+    public static CategoryResponse ToResponse(this Category model)
         {
             return new CategoryResponse
             {
-                id=model.id,
-                name=model.name
+                Id=model.Id,
+                Name=model.Name
             };
     }
 }

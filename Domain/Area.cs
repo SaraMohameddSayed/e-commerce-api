@@ -1,22 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Domain
 {
     public class Area
     {
 
-        public int id { get; set; }
-        public string name { get; set; }
-        public decimal deliveryFee { get; set; }
-        public int governorateId { get; set; }
-        public virtual Governorate governorate { get; set; }
-        public bool isActive { get; set; } = true;
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal DeliveryFee { get; set; }
+        public int GovernorateId { get; set; }
+        public virtual Governorate Governorate { get; set; }
+        public bool IsActive { get; set; } = true;
     }
     public class AreaConfiguration : IEntityTypeConfiguration<Area>
     {
@@ -24,7 +20,7 @@ namespace Domain
         {
 
 
-            builder.HasKey(c => c.id);
+            builder.HasKey(c => c.Id);
 
         }
     }

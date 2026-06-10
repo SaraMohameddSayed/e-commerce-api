@@ -1,29 +1,29 @@
 ﻿using Infrastructure;
 using Domain;
 using DTOs;
-namespace Services
+namespace Application.Services 
 {
     public class AreaService:MainService<Area>
     {
-        public dbContext _context;
-        public GovernorateService _governorateManager;
-        public AreaService(dbContext context,GovernorateService governorateManager) : base(context)
+        private readonly AppDbContext _AppDbContext;
+        private readonly GovernorateService _governorateService;
+        public AreaService(AppDbContext AppDbContext, GovernorateService governorateService) : base(AppDbContext)
         {
-            _context = context;
-            _governorateManager = governorateManager;
+            _AppDbContext = AppDbContext;
+            _governorateService = governorateService;
         }
         public async Task<bool> UpdateArea(UpdateAreaRequest updateAreaRequest)
         {
-            var area = await GetOne(updateAreaRequest.id);
+            var area = await GetOne(updateAreaRequest.Id);
             if (area == null)
             {
                 return false;
             }
-            area.name = updateAreaRequest.name;
-            area.deliveryFee = updateAreaRequest.deliveryFee;
+            area.Name = updateAreaRequest.Name;
+            area.DeliveryFee = updateAreaRequest.DeliveryFee;
 
-            _context.Update(area);
-            await _context.SaveChangesAsync();
+            _AppDbContext.Update(area);
+            await _AppDbContext.SaveChangesAsync();
             return true;
         }
 
@@ -34,20 +34,20 @@ namespace Services
             {
                 return false;
             }
-            area.isActive = !area.isActive;
-            var governorate =await _governorateManager.GetOne(area.governorateId);
-            if (area.isActive == false && !governorate.areas.Any(a => a.isActive == true))
+            area.IsActive = !area.IsActive;
+            var governorate =await _governorateService.GetOne(area.GovernorateId);
+            if (area.IsActive == false && !governorate.Areas.Any(a => a.IsActive == true))
             {
-                governorate.isActive = false;
-                await _governorateManager.Update(governorate);
+                governorate.IsActive = false;
+                await _governorateService.Update(governorate);
             }
-            if (area.isActive == true)
+            if (area.IsActive == true)
             {
-                governorate.isActive=true;
-                await _governorateManager.Update(governorate);
+                governorate.IsActive = true;
+                await _governorateService.Update(governorate);
 
             }
-            await _context.SaveChangesAsync();
+            await _AppDbContext.SaveChangesAsync();
             return true;
         }
     }

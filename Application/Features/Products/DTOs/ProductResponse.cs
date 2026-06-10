@@ -1,0 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DTOs
+{
+    public class ProductResponse
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal OriginalPrice { get; set; }
+        public decimal DiscountedPrice { get; set; }
+        public string ImageUrl { get; set; }
+        public int Quantity { get; set; }
+        public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
+        public string OfferName { get; set; }
+        public bool IsActive { get; set; }
+    }
+}

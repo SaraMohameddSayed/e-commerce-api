@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Application.Services;
 {
     public class ProductOfferService : MainService<ProductOffer>
     {
-        public ProductOfferService(dbContext context) : base(context)
+        public ProductOfferService(AppDbContext AppDbContext) : base(AppDbContext)
         {
            
         }

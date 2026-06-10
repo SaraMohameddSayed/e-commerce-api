@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Services.Interfaces;
+﻿using Application.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
-namespace Services.EventBus
+namespace Application.EventBus
 {
     public class InMemoryEventBus: IEventBus
     {

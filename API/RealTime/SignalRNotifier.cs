@@ -1,5 +1,5 @@
 ﻿using API.Hubs;
-using Services.Abstractions;
+using Application.Abstractions;
 using Microsoft.AspNetCore.SignalR;
 
 public class SignalRNotifier : IRealtimeNotifier

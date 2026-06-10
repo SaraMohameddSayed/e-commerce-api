@@ -7,35 +7,35 @@ using System.Threading.Tasks;
 
 namespace DTOs
 {
-    public static class productOfferExtensions
+    public static class ProductOfferExtensions
     {
-        public static ProductOffer toModel(this addProductToOfferViewModel vm, decimal _discountValue)
+        public static ProductOffer ToProductOffer(this AddProductToOfferRequest vm, decimal _discountValue)
         {
             return new ProductOffer
             {
-                productId = vm.productId,
-                offerId = vm.offerId,
-                applicationDate = vm.applicationDate,
-                discountValue = _discountValue
+                ProductId = vm.ProductId,
+                OfferId = vm.OfferId,
+                ApplicationDate = vm.ApplicationDate,
+                DiscountValue = _discountValue
             };
         }
 
-        public static ProductWithOfferViewModel toViewModel(this ProductOffer model)
+        public static ProductWithOfferResponse ToResponse(this ProductOffer model)
         {
-            return new ProductWithOfferViewModel
+            return new ProductWithOfferResponse
             {
-                Id = model.productId,
-                Name = model.product != null ? model.product.name : string.Empty,
-                imageUrl = model.product != null ? model.product.imageUrl : string.Empty,
-                categoryId = model.product != null ? model.product.categoryId.ToString() : string.Empty,
-                quantity = model.product != null ? model.product.quantity : 0,
-                categoryName = model.product != null && model.product.category != null ? model.product.category.name : string.Empty,
-                offerId = model.offerId,
-                offerName = model.offer != null ? model.offer.name : string.Empty,
-                discountValue = model.discountValue,
-                originalPrice = model.product != null ? model.product.price : 0,
-                discountedPrice = model.product != null ? model.product.price - model.discountValue : 0,
-                applicationDate = model.applicationDate
+                Id = model.ProductId,
+                Name = model.Product != null ? model.Product.Name : string.Empty,
+                ImageUrl = model.Product != null ? model.Product.ImageUrl : string.Empty,
+                CategoryId = model.Product != null ? model.Product.CategoryId.ToString() : string.Empty,
+                Quantity = model.Product != null ? model.Product.Quantity : 0,
+                CategoryName = model.Product != null && model.Product.Category != null ? model.Product.Category.Name : string.Empty,
+                OfferId = model.OfferId,
+                OfferName = model.Offer != null ? model.Offer.Name : string.Empty,
+                DiscountValue = model.DiscountValue,
+                OriginalPrice = model.Product != null ? model.Product.Price : 0,
+                DiscountedPrice = model.Product != null ? model.Product.Price - model.DiscountValue : 0,
+                ApplicationDate = model.ApplicationDate
             };
         }
     }

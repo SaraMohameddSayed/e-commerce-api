@@ -1,7 +1,7 @@
 ﻿using CloudinaryDotNet.Actions;
 using Infrastructure;
 using Services.Interfaces;
-using Services.Events;
+using Application.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Domain;
@@ -9,17 +9,17 @@ using System;
 using System.Threading.Tasks;
 using DTOs;
 using Microsoft.AspNetCore.Identity;
-using Application.Shared;
-namespace Services;
+using Application.Shared.Common;
+namespace Application.Services;;
 
 public class ProductService : MainService<Product>
 {
-    public dbContext _dbContext;
-    public IEventBus _eventBus;
-    public UserManager<IdentityUser> _userManager;
-    public ProductService(dbContext context,IEventBus eventBus,UserManager<IdentityUser> userManager) : base(context)
+    private readonly AppDbContext  _AppDbContext ;
+    private readonly IEventBus _eventBus;
+    private readonly UserManager<IdentityUser> _userManager;
+    public ProductService(AppDbContext  context,IEventBus eventBus,UserManager<IdentityUser> userManager) : base(context)
     {
-        _dbContext=context;
+        _AppDbContext =context;
         _eventBus = eventBus;
         _userManager = userManager;
     }
@@ -28,50 +28,48 @@ public class ProductService : MainService<Product>
         decimal totalAmount = 0;
         foreach (var cartProduct in cartProducts)
         {
-            var product =await GetOne(cartProduct.productId);
+            var product =await GetOne(cartProduct.ProductId);
 
-            decimal discountValue = product.offers?
-                .OrderByDescending(o => o.applicationDate)
-                .FirstOrDefault()?.discountValue ?? 0;
+            decimal discountValue = product.Offers?
+                .OrderByDescending(o => o.ApplicationDate)
+                .FirstOrDefault()?.DiscountValue ?? 0;
+            decimal discountedPrice = discountValue > 0 ? product.Price - discountValue : product.Price;
 
-            decimal discountedPrice = discountValue > 0 ? product.price - discountValue : product.price;
-
-           
             // تحديث إجمالي الطلب
-            totalAmount += discountedPrice * cartProduct.quantity;
+            totalAmount += discountedPrice * cartProduct.Quantity;
         }
         return totalAmount;
     }
 
-    public async Task<PagedResult<ProductViewModel>> GetPagedProducts(int? categoryId,string? searchText,int pageNumber, int pageSize)
+    public async Task<PagedResult<ProductResponse>> GetPagedProducts(int? categoryId,string? searchText,int pageNumber, int pageSize)
     {
         pageNumber = pageNumber < 1 ? 1 : pageNumber;
         pageSize = pageSize > 9 ? 9 : pageSize;
-        IQueryable<Product> query = dbContext.Set<Product>()
-            .Include(p => p.category)
-            .Include(p => p.offers)
-                .ThenInclude(po => po.offer);
+        IQueryable<Product> query = _AppDbContext.Set<Product>()
+            .Include(p => p.Category)
+            .Include(p => p.Offers)
+                .ThenInclude(po => po.Offer);
                 
 
 
         if (categoryId!=null)
         {
 
-            query=query.Where(p => p.category.id == categoryId);
+            query=query.Where(p => p.Category.Id == categoryId);
 
         }
         if (!string.IsNullOrWhiteSpace(searchText))
         {
-           query= query.Where(p => p.name.Contains(searchText) || p.description.Contains(searchText));
+           query= query.Where(p => p.Name.Contains(searchText) || p.Description.Contains(searchText));
         }
         int totalCount = query.Count();
 
         var pagedItems = await query
             .Skip((pageNumber - 1) * pageSize)
             .Take(pageSize)
-            .Select(p=>p.toViewModel())
+            .Select(p=>p.ToResponse())
             .ToListAsync();
-        return new PagedResult<ProductViewModel>
+        return new PagedResult<ProductResponse>
         {
             Items = pagedItems,
             TotalCount = totalCount,
@@ -85,10 +83,10 @@ public class ProductService : MainService<Product>
 public async Task<decimal> CalculateDiscountedPrice(int productId)
     {
         var product = await GetOne(productId);
-        decimal discountValue = product.offers?
-            .OrderByDescending(o => o.applicationDate)
-            .FirstOrDefault()?.discountValue ?? 0;
-        decimal discountedPrice = discountValue > 0 ? product.price - discountValue : product.price;
+        decimal discountValue = product.Offers?
+            .OrderByDescending(o => o.ApplicationDate)
+            .FirstOrDefault()?.DiscountValue ?? 0;
+        decimal discountedPrice = discountValue > 0 ? product.Price - discountValue : product.Price;
         return discountedPrice;
     }
 
@@ -97,20 +95,20 @@ public async void UpdateProductQuantity(int productId, int quantityToDeduct)
         var product = await GetOne(productId);
         if (product != null)
         {
-            product.quantity -= quantityToDeduct;
-            await dbContext.SaveChangesAsync();
+            product.Quantity -= quantityToDeduct;
+            await _AppDbContext.SaveChangesAsync();
         }
     }
 
-    public async Task<bool> UpdateProduct(updateProductViewModel _updateProductViewModel)
+    public async Task<bool> UpdateProduct(UpdateProductRequest updateProductRequest)
     {
-        var product = await GetOne(_updateProductViewModel.id);
-        product!.name = _updateProductViewModel.name;
-        product.description = _updateProductViewModel.description;
-        product.price = _updateProductViewModel.price;
-        product.quantity = _updateProductViewModel.quantity;
-        product.categoryId = _updateProductViewModel.categoryId;
-        product.imageUrl = _updateProductViewModel.imageUrl!;
+        var product = await GetOne(updateProductRequest.Id);
+        product!.Name = updateProductRequest.Name;
+        product.Description = updateProductRequest.Description;
+        product.Price = updateProductRequest.Price;
+        product.Quantity = updateProductRequest.Quantity;
+        product.CategoryId = updateProductRequest.CategoryId;
+        product.ImageUrl = updateProductRequest.ImageUrl!;
         try
         {
             await Update(product);
@@ -122,21 +120,21 @@ public async void UpdateProductQuantity(int productId, int quantityToDeduct)
         }
     }
 
-    public async Task<bool> AddProductAsync(addProductViewModel _addProductViewModel)
+    public async Task<bool> AddProductAsync(AddProductRequest addProductRequest)
     {
-      var result=  await Add(_addProductViewModel.toModel());
+      var result=  await Add(addProductRequest.ToProduct());
         if (result)
         {
-            var product = await dbContext.Set<Product>().FirstOrDefaultAsync(p => p.name == _addProductViewModel.name && p.price == _addProductViewModel.price);
+            var product = await _AppDbContext.Set<Product>().FirstOrDefaultAsync(p => p.Name == addProductRequest.Name && p.Price == addProductRequest.Price);
             
             var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");
             var adminIds = adminUsers.Select(u => u.Id).ToHashSet();
-            var userIds = await dbContext.Set<IdentityUser>()
+            var userIds = await _AppDbContext.Set<IdentityUser>()
           .Where(u => !adminIds.Contains(u.Id))
           .Select(u => u.Id)
           .ToListAsync();
 
-            await _eventBus.Publish(new NewProductAddedEvent(userIds,product.id));
+            await _eventBus.Publish(new NewProductAddedEvent(userIds,product.Id));
             
         }
         return result;
@@ -146,8 +144,8 @@ public async void UpdateProductQuantity(int productId, int quantityToDeduct)
         var product = await GetOne(productId);
         if (product != null)
         {
-            product.isActive = false;
-            await dbContext.SaveChangesAsync();
+            product.IsActive = false;
+            await _AppDbContext.SaveChangesAsync();
             return true;
         }
         return false;

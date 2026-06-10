@@ -1,67 +1,68 @@
 ﻿using Infrastructure;
 
-namespace Services;
-
-public class MainService<T> where T : class
+namespace Application.Services
 {
-    public dbContext dbContext { get; set; }
-
-    public MainService(dbContext _dbContext)
+    public class MainService<T> where T : class
     {
-        dbContext = _dbContext;
-    }
+        public AppDbContext _AppDbContext { get; set; }
 
-    public IQueryable<T> GetAll()
-    {
-        return dbContext.Set<T>().AsQueryable();
-    }
-
-    public async Task<T?> GetOne(object _Id)
-    {
-        return await dbContext.Set<T>().FindAsync(_Id);
-    }
-
-    public async Task<bool> Add(T _product)
-    {
-        try
+        public MainService(AppDbContext AppDbContext)
         {
-            await dbContext.Set<T>().AddAsync(_product);
-            await dbContext.SaveChangesAsync();
-            return true;
-
-        }
-        catch
-        {
-            throw;
+            _AppDbContext = AppDbContext;
         }
 
-    }
-    public async Task<bool> Update(T _product)
-    {
-        try
+        public IQueryable<T> GetAll()
         {
-            dbContext.Set<T>().Update(_product);
-            await dbContext.SaveChangesAsync();
-            return true;
+            return _AppDbContext.Set<T>().AsQueryable();
+        }
+
+        public async Task<T?> GetOne(object _Id)
+        {
+            return await _AppDbContext.Set<T>().FindAsync(_Id);
+        }
+
+        public async Task<bool> Add(T _product)
+        {
+            try
+            {
+                await _AppDbContext.Set<T>().AddAsync(_product);
+                await _AppDbContext.SaveChangesAsync();
+                return true;
+
+            }
+            catch
+            {
+                throw;
+            }
 
         }
-        catch (Exception)
+        public async Task<bool> Update(T _product)
         {
-            throw;
-        }
-    }
-    public async Task<bool> Delete(T _product)
-    {
-        try
-        {
-            dbContext.Set<T>().Remove(_product);
-            await dbContext.SaveChangesAsync();
-            return true;
+            try
+            {
+                _AppDbContext.Set<T>().Update(_product);
+                await _AppDbContext.SaveChangesAsync();
+                return true;
 
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
-        catch (Exception)
+        public async Task<bool> Delete(T _product)
         {
-            throw;
+            try
+            {
+                _AppDbContext.Set<T>().Remove(_product);
+                await _AppDbContext.SaveChangesAsync();
+                return true;
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
     }
 }

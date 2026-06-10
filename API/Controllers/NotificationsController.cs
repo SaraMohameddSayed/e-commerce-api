@@ -1,5 +1,5 @@
 ﻿using Controllers;
-using Services;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -11,24 +11,24 @@ namespace API.Controllers
     [Authorize]
     public class NotificationsController : BaseController
     {
-      public NotificationService notificationManager;
-        public NotificationsController(NotificationService _notificationManager)
+      public NotificationService _notificationService;
+        public NotificationsController(NotificationService notificationService)
         {
-            notificationManager = _notificationManager;
+            _notificationService = notificationService;
         }
 
         [HttpGet]
         public IActionResult getUserNotifications()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var notifications = notificationManager.getUserNotifications(userId);
+            var notifications = _notificationService.GetUserNotifications(userId);
             return Ok(notifications);
         }
         [HttpPost("markAllAsRead")]
         public async Task<IActionResult> markAllAsRead()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await notificationManager.markAllAsRead(userId);
+            await _notificationService.MarkAllAsRead(userId);
             return Ok();
         }
 

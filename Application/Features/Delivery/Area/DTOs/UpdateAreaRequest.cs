@@ -8,9 +8,9 @@ namespace DTOs
 {
     public class UpdateAreaRequest
     {
-        public int id { get; set; }
-        public string name { get; set; }
-        public decimal deliveryFee { get; set; }
-        public int governorateId { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public decimal DeliveryFee { get; set; }
+        public int GovernorateId { get; set; }
     }
 }

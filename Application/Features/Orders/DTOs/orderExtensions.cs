@@ -9,31 +9,31 @@ using System.Threading.Tasks;
 
 namespace DTOs
 {
-    public static class orderExtensions
+    public static class OrderExtensions
     {
-        public static orderViewModel toViewModel(this Order order)
+        public static OrderResponse ToResponse(this Order order)
         {
 
-            return new orderViewModel
+            return new OrderResponse
             {
-                id = order.id,
-                customerId = order.userId,
-                customerName=order.user.UserName,
-                products = order.products?.Select(op => op.toViewModel()).ToList(),
-                status = order.status,
-                governorateName = order.governorateName,
-                areaName = order.areaName,
-                address = order.address,
-                phone = order.phone,
-                isPaid = order.isPaid,
-                paymentMethod = order.paymentMethod,
-                totalAmount = order.totalAmount,
-                subTotal=order.subTotal,
-                deliveryFee=order.delivaryFee,
-                notes = order.notes,
-                createdAt = order.createdAt,
-                updatedAt = order.updatedAt,
-                trackingNumber = order.trackingNumber
+                Id = order.Id,
+                CustomerId = order.UserId,
+                CustomerName = order.User.UserName,
+                Products = order.Products?.Select(op => op.ToResponse()).ToList(),
+                Status = order.Status,
+                GovernorateName = order.GovernorateName,
+                AreaName = order.AreaName,
+                Address = order.Address,
+                Phone = order.Phone,
+                IsPaid = order.IsPaid,
+                PaymentMethod = order.PaymentMethod,
+                TotalAmount = order.TotalAmount,
+                SubTotal = order.SubTotal,
+                DeliveryFee = order.DeliveryFee,
+                Notes = order.Notes,
+                CreatedAt = order.CreatedAt,
+                UpdatedAt = order.UpdatedAt,
+                TrackingNumber = order.TrackingNumber
             };
         }
 

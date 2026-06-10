@@ -8,6 +8,6 @@ namespace DTOs
 {
     public class AddCategoryRequest
     {
-        public string name { get; set; }
+        public string Name { get; set; }
     }
 }

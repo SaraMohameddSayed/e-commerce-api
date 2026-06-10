@@ -9,7 +9,7 @@ namespace Infrastructure.Seeders
 {
     public static class GovernorateAreaSeeder
     {
-        public static async Task SeedAsync(dbContext _context)
+        public static async Task SeedAsync(AppDbContext  _context)
         {
             if (_context.Governorate.Any())
                 return;
@@ -18,48 +18,48 @@ namespace Infrastructure.Seeders
         {
             new Governorate
             {
-                name = "القاهرة",
-                areas = new List<Area>
+                Name = "القاهرة",
+                Areas = new List<Area>
                 {
-                    new Area { name = "مدينة نصر" ,isActive=true,deliveryFee=15},
-                    new Area { name = "المعادي" ,isActive=true,deliveryFee=20},
-                    new Area { name = "الزمالك" ,isActive=true,deliveryFee=25},
-                    new Area { name = "حلوان" , isActive=true,deliveryFee=30}
+                    new Area { Name = "مدينة نصر" ,IsActive=true,DeliveryFee=15},
+                    new Area { Name = "المعادي" ,IsActive=true,DeliveryFee=20},
+                    new Area { Name = "الزمالك" ,IsActive=true,DeliveryFee=25},
+                    new Area { Name = "حلوان" , IsActive=true,DeliveryFee=30}
                 },
-                isActive=true
+                IsActive=true
             },
             new Governorate
             {
-                name = "الجيزة",
-                areas = new List<Area>
+                Name = "الجيزة",
+                Areas = new List<Area>
                 {
-                    new Area { name = "الدقي",isActive=true,deliveryFee=35 },
-                    new Area { name = "المهندسين" , isActive = true,deliveryFee=40},
-                    new Area { name = "6 أكتوبر" , isActive = true,deliveryFee=45},
-                    new Area { name = "الشيخ زايد" , isActive = true,deliveryFee=50}
+                    new Area { Name = "الدقي", IsActive=true, DeliveryFee=35 },
+                    new Area { Name = "المهندسين" , IsActive = true, DeliveryFee=40},
+                    new Area { Name = "6 أكتوبر" , IsActive = true, DeliveryFee=45},
+                    new Area { Name = "الشيخ زايد" , IsActive = true, DeliveryFee=50}
                 },
-                isActive=true
+                IsActive=true
             },
             new Governorate
             {
-               name = "الإسكندرية",
-               areas = new List<Area>
+               Name = "الإسكندرية",
+               Areas = new List<Area>
                {
-                   new Area { name = "سيدي جابر" ,isActive=true,deliveryFee=55},
-                   new Area { name = "محرم بك" ,isActive=true ,deliveryFee=60},
-                   new Area { name = "العجمي" ,isActive=true ,deliveryFee=70}
+                   new Area { Name = "سيدي جابر" ,IsActive=true,DeliveryFee=55},
+                   new Area { Name = "محرم بك" ,IsActive=true ,DeliveryFee=60},
+                   new Area { Name = "العجمي" ,IsActive=true ,DeliveryFee=70}
                 },
-                isActive=true
+                IsActive=true
              },
             new Governorate
             {
-                name = "المنصورة",
-                areas = new List<Area>
+                Name = "المنصورة",
+                Areas = new List<Area>
                 {
-                    new Area { name = "المنصورة الجديدة",isActive=true ,deliveryFee=75},
-                    new Area { name = "ميت غمر" ,isActive=true ,deliveryFee=80}
+                    new Area { Name = "المنصورة الجديدة", IsActive=true ,DeliveryFee=75},
+                    new Area { Name = "ميت غمر" , IsActive=true ,DeliveryFee=80}
                 },
-                isActive=true
+                IsActive=true
             }
            };
             await _context.Governorate.AddRangeAsync(governorates);

@@ -6,28 +6,28 @@ using System.Threading.Tasks;
 using Domain;
 namespace DTOs
 {
-    public static class areaExtensions
+    public static class AreaExtensions
     {
-        public static AreaResponse ToViewModel(this Area area)
+        public static AreaResponse ToResponse(this Area area)
         {
             if (area == null) return null;
             return new AreaResponse
             {
-                id = area.id,
-                name = area.name,
-                isActive= area.isActive,
-                deliveryFee = area.deliveryFee,
-                governorateId = area.governorateId
+                Id = area.Id,
+                Name = area.Name,
+                IsActive= area.IsActive,
+                DeliveryFee = area.DeliveryFee,
+                GovernorateId = area.GovernorateId  
             };
         }
-        public static Area toModel(this AddAreaRequest addAreaRequest)
+        public static Area ToArea(this AddAreaRequest addAreaRequest)
         {
             if (addAreaRequest == null) return null;
             return new Area
             {
-                name = addAreaRequest.name,
-                deliveryFee = addAreaRequest.deliveryFee,
-                governorateId = addAreaRequest.governorateId
+                Name = addAreaRequest.Name,
+                DeliveryFee = addAreaRequest.DeliveryFee,
+                GovernorateId = addAreaRequest.GovernorateId
             };
         }
     }

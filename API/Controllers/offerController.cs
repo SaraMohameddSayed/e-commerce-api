@@ -1,4 +1,4 @@
-using Services;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -9,21 +9,21 @@ namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class offerController : BaseController
+    public class OfferController : BaseController
     {
-        public OfferService offerManager;
-        public ProductService productManager;
-        public offerController(OfferService _offerManager,ProductService _productManager)
+        public OfferService _offerService;
+        public ProductService _productService;
+        public OfferController(OfferService offerService, ProductService productService)
         {
-            offerManager = _offerManager;
-            productManager = _productManager;
+            _offerService = offerService;
+            _productService = productService;
         }
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> addOffer([FromForm] Offer _offer)
         {
-            var result = await offerManager.AddOfferAsync(_offer);
+            var result = await _offerService.AddOfferAsync(_offer);
             if (result)
             {
                 return Ok(result);
@@ -42,7 +42,7 @@ namespace Controllers
         public IActionResult getAllOffers()
         {
 
-            var result = offerManager.getAll().Select(offer=>offer.toViewModel());
+            var result = _offerService.GetAll().Select(offer=>offer.ToResponse());
             if (result != null)
             {
                 return Ok(result);

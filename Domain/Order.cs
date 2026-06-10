@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
 using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
@@ -8,49 +7,48 @@ namespace Domain;
 
 public class Order
 {
-    public int id { get; set; }
+    public int Id { get; set; }
 
     //User
-    public string userId { get; set; }
-    public virtual IdentityUser? user { get; set; }
+    public string UserId { get; set; }
+    public virtual IdentityUser? User { get; set; }
    
     //Products
-    public virtual List<OrderProduct>? products { get; set; }
+    public virtual List<OrderProduct>? Products { get; set; }
     
     //Status
-    public OrderStatus status { get; set; } = OrderStatus.Pending;
+    public OrderStatus Status { get; set; } = OrderStatus.Pending;
 
     //Address
-    public string governorateName { get; set; }
-    public string areaName { get; set; }
-    public string address { get; set; }
-    public string phone { get; set; }
+    public string GovernorateName { get; set; }
+    public string AreaName { get; set; }
+    public string Address { get; set; }
+    public string Phone { get; set; }
 
     //Payment
-    public bool isPaid { get; set; } = false;
-    public PaymentMethod paymentMethod { get; set; }  // cod / card
+    public bool IsPaid { get; set; } = false;
+    public PaymentMethod PaymentMethod { get; set; }  // cod / card
 
     //Pricing
-    public decimal subTotal { get; set; }
-    public decimal totalAmount { get; set; }
-    public decimal delivaryFee { get; set; }
+    public decimal SubTotal { get; set; }
+    public decimal TotalAmount { get; set; }
+    public decimal DeliveryFee { get; set; }
     
     //Meta
-    public string? notes { get; set; }
-    public string trackingNumber { get; set; }
-
+    public string? Notes { get; set; }
+    public string TrackingNumber { get; set; }
     //Dates
-    public DateTime createdAt { get; set; } 
-    public DateTime updatedAt { get; set; } 
+    public DateTime CreatedAt { get; set; } 
+    public DateTime UpdatedAt { get; set; } 
 
 }
 
 
-public class orderConfiguration : IEntityTypeConfiguration<Order>
+public class OrderConfiguration : IEntityTypeConfiguration<Order>
 {
     public void Configure(EntityTypeBuilder<Order> builder)
     {
-        builder.HasKey(o => o.id);
+        builder.HasKey(o => o.Id);
        
     }
 }

@@ -3,31 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Application.Features.Delivery.Governorate.DTOs;
 using Domain;
 using DTOs;
 namespace DTOs
 {
-    public static class governorateExtensions
+    public static class GovernorateExtensions
     {
-        public static governorateViewModel ToViewModel(this Governorate governorate)
+        public static GovernorateResponse ToResponse(this Governorate governorate)
         {
             if (governorate == null) return null;
-            return new governorateViewModel
+            return new GovernorateResponse
             {
-                id = governorate.id,
-                name = governorate.name,
-                isActive=governorate.isActive,
-                areas = governorate.areas?.Select(a => a.ToViewModel()).ToList()
+                Id = governorate.Id,
+                Name = governorate.Name,
+                IsActive = governorate.IsActive,
+                Areas = governorate.Areas?.Select(a => a.ToResponse()).ToList()
             };
         }
 
-        public static Governorate toModel(this addGovernorateViewModel addGovernorateViewModel)
+        public static Governorate ToGovernorate(this AddGovernorateRequest addGovernorateRequest)
         {
-            if (addGovernorateViewModel == null) return null;
+            if (addGovernorateRequest == null) return null;
             return new Governorate
             {
-                name = addGovernorateViewModel.name,
+                Name = addGovernorateRequest.Name,
             };
         }
     }

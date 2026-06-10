@@ -1,49 +1,43 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
 namespace Domain;
 
 
 public class Product
 {
 
-    public int id { get; set; }
+    public int Id { get; set; }
 
-    public string name { get; set; }
+    public string Name { get; set; }
 
-    public string imageUrl { get; set; }
+    public string ImageUrl { get; set; }
+    public decimal Price { get; set; }
 
-    public decimal price { get; set; }
+    public int Quantity { get; set; }
 
-    public int quantity { get; set; }
+    public string Description { get; set; }
 
-    public string description { get; set; }
+    public int CategoryId { get; set; }
+    public bool IsActive { get; set; } = true;
 
-    public int categoryId { get; set; }
-    public bool isActive { get; set; } = true;
+    public virtual Category Category { get; set; }
 
-    public virtual Category category { get; set; }
+    public virtual List<OrderProduct>? Orders { get; set; }
+    public virtual List<CartProduct>? Carts { get; set; }
 
-    public virtual List<OrderProduct>? orders { get; set; }
-
-    public virtual List<CartProduct>? carts { get; set; }
-
-    public virtual List<ProductOffer>? offers { get; set; }
-
+    public virtual List<ProductOffer>? Offers { get; set; }
 
 }
 
-public class productConfiguration : IEntityTypeConfiguration<Product>
+public class ProductConfiguration : IEntityTypeConfiguration<Product>
 {
     public void Configure(EntityTypeBuilder<Product> builder)
     {
-        builder.HasKey(p => p.id);
-
-        builder.Property(p => p.name).IsRequired();
-        builder.Property(p => p.description).IsRequired();
-        builder.Property(p => p.price).HasPrecision(5, 2).IsRequired();
-        builder.Property(p => p.imageUrl).IsRequired();
-        builder.HasOne(p => p.category).WithMany(c => c.products).HasForeignKey(p => p.categoryId);
-
+        builder.HasKey(p => p.Id);  
+        builder.Property(p => p.Name).IsRequired();
+        builder.Property(p => p.Description).IsRequired();
+        builder.Property(p => p.Price).HasPrecision(5, 2).IsRequired();
+        builder.Property(p => p.ImageUrl).IsRequired();
+        builder.HasOne(p => p.Category).WithMany(c => c.Products).HasForeignKey(p => p.CategoryId);
     }
 }

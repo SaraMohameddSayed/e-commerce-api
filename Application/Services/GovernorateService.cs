@@ -1,33 +1,28 @@
-﻿using Application.Features.Delivery.Governorate.DTOs;
-using Infrastructure;
+﻿using Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DTOs;
-namespace Services
+
+namespace Application.Services
 {
     public class GovernorateService:MainService<Governorate>
     {
-        public dbContext _context;
-        public GovernorateService(dbContext context) : base(context)
+        private readonly AppDbContext _AppDbContext;
+        public GovernorateService(AppDbContext AppDbContext) : base(AppDbContext)
         {
-            _context = context;
+            _AppDbContext = AppDbContext;
         }
 
-        public async Task<bool> UpdateGovernorate(updateGovernorateViewModel updateGovernorateViewModel)
+        public async Task<bool> UpdateGovernorate(UpdateGovernorateRequest updateGovernorateRequest)
         {
-            var governorate = await GetOne(updateGovernorateViewModel.id);
+            var governorate = await GetOne(updateGovernorateRequest.Id);
             if (governorate == null)
             {
                 return false;
             }
-            governorate.name = updateGovernorateViewModel.name;
-            _context.Update(governorate);
-            await _context.SaveChangesAsync();
+            governorate.Name = updateGovernorateRequest.Name;
+            _AppDbContext.Update(governorate);
+            await _AppDbContext.SaveChangesAsync();
             return true;
         }
 
@@ -38,21 +33,19 @@ namespace Services
             {
                 return false;
             }
-            governorate.isActive = !governorate.isActive;
-            var areas = await _context.Set<Area>().Where(a => a.governorateId == id).ToListAsync();
+            governorate.IsActive = !governorate.IsActive;
+            var areas = await _AppDbContext.Set<Area>().Where(a => a.GovernorateId == id).ToListAsync();
             foreach (var area in areas)
             {
-                if (governorate.isActive == false) {
-                    area.isActive = false;
-
+                if (governorate.IsActive == false) {
+                    area.IsActive = false;
                 }
                 else
                 {
-                    area.isActive = true;
-
+                    area.IsActive = true;
                 }
             }
-            await _context.SaveChangesAsync();
+            await _AppDbContext.SaveChangesAsync();
             return true;
         }
     }

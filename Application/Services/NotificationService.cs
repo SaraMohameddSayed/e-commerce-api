@@ -5,26 +5,27 @@ using System.Text;
 using System.Threading.Tasks;
 using Infrastructure;
 using Domain;
-namespace Services
+namespace Application.Services;
 {
     public class NotificationService:MainService<Notification>
     {
-        public dbContext _context;
-        public NotificationService(dbContext context):base(context){
-            _context = context;
+        private readonly AppDbContext _AppDbContext;
+        public NotificationService(AppDbContext AppDbContext) :base(AppDbContext)
+        {
+            _AppDbContext = AppDbContext;
         }
         public List<Notification> GetUserNotifications(string userId)
         {
-            return _context.Notification.Where(n => n.UserId == userId).ToList();
+            return _AppDbContext.Notification.Where(n => n.UserId == userId).ToList();
         }
         public async Task MarkAllAsRead(string userId)
         {
-            var notifications = _context.Notification.Where(n => n.UserId == userId && !n.IsRead).ToList();
+            var notifications = _AppDbContext.Notification.Where(n => n.UserId == userId && !n.IsRead).ToList();
             foreach (var notification in notifications)
             {
                 notification.IsRead = true;
             }
-            await _context.SaveChangesAsync();
+            await _AppDbContext.SaveChangesAsync();
         }
     }
 }

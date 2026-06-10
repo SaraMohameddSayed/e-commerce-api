@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 
 namespace DTOs
 {
-    public static class messageExtensions
+    public static class MessageExtensions
     {
-        //public static Message toModel(this addMesssageViewModel addMesssageViewModel,string userId)
+        //public static Message ToMessage(this addMesssageRequest addMesssageRequest,string userId)
         //{
         //    return new Message
         //    {
-        //        text = addMesssageViewModel.text,
-        //        userId = userId
+        //        Text = addMesssageRequest.text,
+        //        UserId = userId
         //        // Note: userId is not mapped here as it may require conversion from string to int
         //    };
         //}

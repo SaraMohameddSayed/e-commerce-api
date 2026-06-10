@@ -1,13 +1,10 @@
-﻿using Services.Events;
-using Services.Interfaces;
+﻿using Application.Events;
+using Application.Services;
 using Domain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Application.Abstractions;
 
-namespace Services.Handlers
+
+namespace Application.Handlers
 {
     public class NewOfferAddedNotificationHandler : IEventHandler<NewOfferAddedEvent>
     {

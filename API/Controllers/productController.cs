@@ -1,35 +1,31 @@
-using Infrastructure;
-using Services;
+using Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Domain;
 using DTOs;
 
 namespace Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class productController : BaseController
+    public class ProductController : BaseController
     {
-        public ProductService productManager;
-        public CloudinaryService cloudinaryManager;
+        public ProductService _productService;
+        public CloudinaryService _cloudinaryService;
        
 
-        public productController(ProductService _productManager, CloudinaryService _cloudinaryManager)
+        public ProductController(ProductService productService, CloudinaryService cloudinaryService)
         {
-            productManager = _productManager;
-            cloudinaryManager = _cloudinaryManager;
+            _productService = productService;
+            _cloudinaryService = cloudinaryService;
         }
         [Authorize(Roles="Admin")]
         [HttpPost]
-        public async Task<IActionResult> addProduct([FromForm] addProductViewModel _addProductViewModel)
+        public async Task<IActionResult> addProduct([FromForm] AddProductRequest addProductRequest)
         {
 
-            var uploadImageResult = await cloudinaryManager.UploadImageAsync(_addProductViewModel.imageFile);
-            _addProductViewModel.imageUrl = uploadImageResult;
-            var result = await productManager.addProductAsync(_addProductViewModel);
+            var uploadImageResult = await _cloudinaryService.UploadImageAsync(addProductRequest.ImageFile);
+            addProductRequest.ImageUrl = uploadImageResult;
+            var result = await _productService.AddProductAsync(addProductRequest);
             if (result)
             {
 
@@ -47,7 +43,7 @@ namespace Controllers
         public async Task<IActionResult> GetAllProducts(int? categoryId, string? searchText,int pageNumber = 1, int pageSize = 9)
         {
             
-            var result = await productManager.GetPagedProducts(categoryId, searchText,pageNumber, pageSize);
+            var result = await _productService.GetPagedProducts(categoryId, searchText,pageNumber, pageSize);
 
 
             return Ok(result);
@@ -55,19 +51,19 @@ namespace Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromForm] updateProductViewModel _updateProductViewModel)
+        public async Task<IActionResult> UpdateProduct(int id, [FromForm] UpdateProductRequest updateProductRequest)
         {
-            if (id != _updateProductViewModel.id)
+            if (id != updateProductRequest.Id)
             {
                 return BadRequest("Product ID mismatch.");
             }
-            if (_updateProductViewModel.imageFile != null)
+            if (updateProductRequest.ImageFile != null)
             {
-                var uploadImageResult = await cloudinaryManager.UploadImageAsync(_updateProductViewModel.imageFile);
-                _updateProductViewModel.imageUrl = uploadImageResult;
+                var uploadImageResult = await _cloudinaryService.UploadImageAsync(updateProductRequest.ImageFile);
+                updateProductRequest.ImageUrl = uploadImageResult;
             }
            
-            var result = await productManager.updateProduct(_updateProductViewModel);
+            var result = await _productService.UpdateProduct(updateProductRequest);
             if (result)
             {
                 return Ok(result);
@@ -81,11 +77,11 @@ namespace Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdateStock(int id, [FromBody]int newStock)
         {
-            var product = await productManager.getOne(id);
+            var product = await _productService.GetOne(id);
             if (product == null) return NotFound();
 
-            product.quantity = newStock;
-            await productManager.Update(product);
+            product.Quantity = newStock;
+            await _productService.Update(product);
 
             return Ok(new { message = "Stock updated successfully" });
         }
@@ -93,24 +89,23 @@ namespace Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ToggleActive(int id)
         {
-            var product = await productManager.getOne(id);
+            var product = await _productService.GetOne(id);
             if (product == null) return NotFound();
 
-            product.isActive = !product.isActive;
-            await productManager.Update(product);
-
+            product.IsActive= !product.IsActive;
+            await _productService.Update(product);
             return Ok(new { message = "Status updated" });
         }
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProduct(int id)
         {
-            var product = await productManager.getOne(id);
+            var product = await _productService.GetOne(id);
             if (product == null)
             {
                 return NotFound("Product not found.");
             }
-            var result = await productManager.softDeleteProduct(product.id);
+            var result = await _productService.SoftDeleteProduct(product.Id);
             if (result)
             {
                 return Ok(result);

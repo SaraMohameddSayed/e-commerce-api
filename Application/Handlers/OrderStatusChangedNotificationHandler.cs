@@ -1,13 +1,10 @@
-﻿using Services.Events;
-using Services.Interfaces;
+﻿using Application.Abstractions;
+using Application.Events;
 using Domain;
 using Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-namespace Services.Handlers
+using Application.Services;
+
+namespace Application.Handlers
 {
     public class OrderStatusChangedNotificationHandler: IEventHandler<OrderStatusChangedEvent>
     {

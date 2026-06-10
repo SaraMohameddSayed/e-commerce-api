@@ -1,18 +1,18 @@
 ﻿
 using Infrastructure;
-using Services.Events;
+using Application.Events;
 using Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Domain;
 using System;
-namespace Services;
+namespace Application.Services;;
 
  public class OfferService : MainService<Offer>
     {
-    public IEventBus _eventBus;
-    public UserManager<IdentityUser> _userManager;
-    public OfferService(dbContext context,IEventBus eventBus,UserManager<IdentityUser> userManager) : base(context)
+    private readonly IEventBus _eventBus;
+    private readonly UserManager<IdentityUser> _userManager;
+    public OfferService(AppDbContext AppDbContext, IEventBus eventBus,UserManager<IdentityUser> userManager) : base(AppDbContext)
         {
         _eventBus = eventBus;
         _userManager = userManager;
@@ -22,16 +22,16 @@ namespace Services;
         var result = await Add(_offer);
         if (result)
         {
-            var offer = await dbContext.Set<Offer>().FirstOrDefaultAsync(o => o.name == _offer.name);
+            var offer = await _AppDbContext.Set<Offer>().FirstOrDefaultAsync(o => o.Name == _offer.Name);
 
             var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");
             var adminIds = adminUsers.Select(u => u.Id).ToHashSet();
-            var userIds = await dbContext.Set<IdentityUser>()
+            var userIds = await _AppDbContext.Set<IdentityUser>()
           .Where(u => !adminIds.Contains(u.Id))
           .Select(u => u.Id)
           .ToListAsync();
 
-            await _eventBus.Publish(new NewOfferAddedEvent(userIds, offer.id));
+            await _eventBus.Publish(new NewOfferAddedEvent(userIds, offer.Id));
         }
         return result;
     }

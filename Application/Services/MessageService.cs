@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Application.Services;
 {
     public class MessageService:MainService<Message>
     {
-        public MessageService(dbContext _dbContext):base(_dbContext)
+        public MessageService(AppDbContext  AppDbContext ):base( AppDbContext )
         {
         }
 

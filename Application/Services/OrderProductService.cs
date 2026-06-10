@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Services
+namespace Application.Services;
 {
     public class OrderProductService:MainService<OrderProduct>
     {
-        public  OrderProductService(dbContext _dbContext):base(_dbContext)
+        public  OrderProductService(AppDbContext  AppDbContext ):base( AppDbContext )
         {
 
         }
@@ -21,11 +21,11 @@ namespace Services
             {
                 var orderProduct = new OrderProduct
                 {
-                    productId = cartProduct.productId,
-                    productName = cartProduct.product.name,
-                    productImageUrl = cartProduct.product.imageUrl,
-                    quantity = cartProduct.quantity,
-                    price = cartProduct.product.price // Assuming CartProduct has a navigation property to Product
+                    ProductId = cartProduct.ProductId,
+                    ProductName = cartProduct.Product.Name,
+                    ProductImageUrl = cartProduct.Product.ImageUrl,
+                    Quantity = cartProduct.Quantity,
+                    Price = cartProduct.Product.Price // Assuming CartProduct has a navigation property to Product
                 };
                 orderProducts.Add(orderProduct);
             }
