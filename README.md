@@ -8,7 +8,6 @@
 
 A production-ready RESTful API for a full-featured e-commerce platform. Built with **ASP.NET Core 9** following **Clean Architecture** principles — featuring JWT authentication, role-based order lifecycle management, a custom event-driven notification system, real-time SignalR updates, offers & promotions, and Egyptian delivery region management.
 
-🔗 **Live API (Swagger):** `https://your-api.railway.app/swagger`
 🖥️ **Frontend Client:** [El-Beqala Angular Client](https://github.com/SaraMohameddSayed/ecommerce-angular-client)
 
 ---
